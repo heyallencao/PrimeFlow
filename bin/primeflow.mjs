@@ -1965,6 +1965,24 @@ function detectCiCommand() {
     if (!result.target_branch) result.target_branch = "main";
   }
 
+  // GitLab CI
+  const gitlabCi = path.join(projectRoot, ".gitlab-ci.yml");
+  if (fs.existsSync(gitlabCi) && result.type === "unknown") {
+    result.type = "gitlab-ci";
+    try {
+      const content = fs.readFileSync(gitlabCi, "utf8");
+      const npmTestMatch = content.match(/npm test|npm run test|npm run test:[a-z]+/);
+      if (npmTestMatch && !result.test_cmd) result.test_cmd = npmTestMatch[0];
+      const pyTestMatch = content.match(/pytest/);
+      if (pyTestMatch && !result.test_cmd) result.test_cmd = "pytest";
+      const covMatch = content.match(/npm run coverage|pytest --cov|--coverage/);
+      if (covMatch && !result.coverage_cmd) result.coverage_cmd = covMatch[0];
+      const deployMatch = content.match(/deploy|npm run deploy/);
+      if (deployMatch && !result.deploy_cmd) result.deploy_cmd = deployMatch[0];
+      if (!result.target_branch) result.target_branch = "main";
+    } catch (_) { /* best effort */ }
+  }
+
   // Jenkins
   const jenkinsfile = path.join(projectRoot, "Jenkinsfile");
   if (fs.existsSync(jenkinsfile) && result.type === "unknown") {
