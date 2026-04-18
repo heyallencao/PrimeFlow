@@ -428,7 +428,28 @@ function rewriteInstalledSkillReferences(content, runtimeRootRef) {
     .replaceAll(
       "`orchestration/handoff/SKILL.md`",
       `\`${normalizedRuntimeRoot}/orchestration/handoff/SKILL.md\``
-    );
+    )
+    .replaceAll(
+      "`templates/preamble.md`",
+      `\`${normalizedRuntimeRoot}/templates/preamble.md\``
+    )
+    .replaceAll(
+      "`templates/test-commands.md`",
+      `\`${normalizedRuntimeRoot}/templates/test-commands.md\``
+    )
+    .replaceAll(
+      "`decision/review/specialists/`",
+      `\`${normalizedRuntimeRoot}/decision/review/specialists/\``
+    )
+    .replaceAll(
+      /`specialists\/([a-z-]+\.md)`/g,
+      (_, name) => `\`${normalizedRuntimeRoot}/decision/review/specialists/${name}\``
+    )
+    // Rewrite markdown link relative paths (e.g. [text](../../templates/foo.md))
+    .replaceAll("](../../templates/preamble.md)", `](${normalizedRuntimeRoot}/templates/preamble.md)`)
+    .replaceAll("](../../templates/test-commands.md)", `](${normalizedRuntimeRoot}/templates/test-commands.md)`)
+    .replaceAll("](../../docs/quickstart.md)", `](${normalizedRuntimeRoot}/docs/quickstart.md)`)
+    .replaceAll("](../../orchestration/handoff/SKILL.md)", `](${normalizedRuntimeRoot}/orchestration/handoff/SKILL.md)`);
 }
 
 function resolveGeneratedCodexSkillContent(
