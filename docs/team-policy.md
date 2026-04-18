@@ -1,173 +1,125 @@
 # PrimeFlow Team Policy
 
-这份文档回答的是：
+This document explains how a team-level policy layer can sit on top of PrimeFlow without rewriting the core workflow contract.
 
-- 团队如何在不 fork PrimeFlow 核心 skill 的前提下共享规则
-- 哪些东西可以覆写
-- 哪些东西不能碰
+## Design Goal
 
-## 设计目标
+The team policy layer exists to let teams standardize a few high-value operational rules while keeping the core PrimeFlow skills stable.
 
-Team Policy Overlay 的目标不是把 PrimeFlow 变成一个重量级配置系统，而是让小团队能版本化地表达：
+It should help teams answer questions such as:
 
-- 我们对 `qa_required` 的默认判断
-- 我们对 review gate 的最低要求
-- 我们对 release 披露的最低要求
-- 我们对 handoff 交接内容的额外约束
+- when QA is required by default
+- how strict the review gate should be
+- what release disclosures are mandatory
+- whether handoff packages need extra required slots
 
-一句话：
+## State Boundary
 
-> policy 是团队规则，不是运行时状态。
+Team policy may influence routing defaults or required disclosures, but it should not redefine core skill identity or erase PrimeFlow's explicit exit semantics.
 
-## 状态边界
+## What Policy May Override
 
-PrimeFlow 的状态边界要保持很硬：
+### 1. QA default policy
 
-- `.primeflow/` 只放运行时状态、telemetry、handoff 和派生工件
-- team policy 必须放在可版本控制的仓库文件里
-- 不把团队长期规则写进 `.primeflow/`
+A team may decide:
 
-推荐位置：
+- when `qa_required` defaults to `true`
+- which categories of work may skip QA
+- what counts as acceptable degraded QA
 
-- `primeflow.policy.json`
+### 2. Review gate
 
-如果团队有强烈偏好，也可以用：
+A team may tighten:
 
-- `primeflow.policy.toml`
+- severity thresholds that block merge
+- which surfaces always trigger extra review
+- whether specific findings require explicit human confirmation
 
-但这一轮建议先统一为 JSON，降低解析和维护成本。
+### 3. Release disclosure requirements
 
-## Policy 能覆写什么
+A team may require additional disclosure for:
 
-当前建议只开放少数高价值覆写点：
+- partial QA
+- risk acceptance
+- mitigations and rollback notes
 
-### 1. QA 默认策略
+### 4. Handoff extensions
 
-可表达：
+A team may require extra handoff slots beyond the default 8 if their workflow depends on them.
 
-- 哪些类型的改动默认 `qa_required = true`
-- 哪些类型的改动默认 `qa_required = false`
+## What Policy Must Not Override
 
-适合的规则：
+Policy must not:
 
-- 前端用户路径默认进 `qa`
-- 纯脚本或纯文档默认不进 `qa`
+- rename public skills
+- rewrite the core Decision Contract fields
+- change which skill owns which responsibility
+- turn sidecar skills into routing authorities
+- silently erase honest disclosure requirements
 
-### 2. Review Gate
+## Minimal File Shape
 
-可表达：
+A team policy file should stay small and explicit:
 
-- review 通过前最低需要哪些输入
-- 团队对 P0 / P1 的默认处理口径
-- 哪些模块触发额外 reviewer persona
+```yaml
+qa:
+  default_required_for:
+    - browser-path
+    - critical-integration
 
-### 3. Release 披露要求
+review:
+  always_block_on:
+    - P0
+    - P1
 
-可表达：
+release:
+  require_disclosure_for:
+    - qa-partial
+    - pass-with-risks
 
-- 哪些未执行验证必须披露
-- 哪些风险级别必须写进 release statement
-
-### 4. Handoff 扩展槽位
-
-可表达：
-
-- 除标准 8 槽外，团队是否要求额外记录
-- 例如：值班联系人、回滚命令、发布窗口
-
-## Policy 不能覆写什么
-
-这些东西不应由 policy 覆写：
-
-- PrimeFlow 的主链阶段定义
-- `orchestrate` 的核心路由职责
-- `verify` / `review` / `release` 的诚实原则
-- `.primeflow/state.json` 的运行时含义
-
-也就是说，policy 可以调团队口径，但不能把 PrimeFlow 改成另一套系统。
-
-## 最小文件格式
-
-建议的 `primeflow.policy.json`：
-
-```json
-{
-  "version": 1,
-  "qa": {
-    "default_required_for": [
-      "frontend-user-path",
-      "browser-interaction",
-      "critical-integration"
-    ],
-    "default_skipped_for": [
-      "docs-only",
-      "copy-only",
-      "internal-script"
-    ]
-  },
-  "review": {
-    "block_on": ["P0", "P1"],
-    "extra_personas": {
-      "auth": ["security-reviewer"],
-      "migration": ["data-migrations-reviewer"]
-    }
-  },
-  "release": {
-    "must_disclose": [
-      "skipped-qa",
-      "partial-qa",
-      "known-risks"
-    ]
-  },
-  "handoff": {
-    "extra_slots": [
-      "rollback-command",
-      "oncall-owner"
-    ]
-  }
-}
+handoff:
+  extra_required_slots:
+    - rollout-status
 ```
 
-## 推荐解释方式
+## Recommended Interpretation
 
-policy 文件的值建议偏声明式，而不是脚本式：
+When a policy exists:
 
-- 写“哪些情况默认触发”
-- 不写复杂表达式执行器
-- 不把团队 policy 做成另一套 DSL
+- treat it as a constrained overlay on top of PrimeFlow
+- keep the skill contract stable
+- favor explicit disclosure over silent auto-relaxation
 
-这样更容易 code review，也更容易在不同 agent 里保持一致。
+## Team Adoption Notes
 
-## 团队落地建议
+Teams usually get the most value by starting small:
 
-推荐顺序：
+1. QA defaults
+2. review gate
+3. release disclosure
+4. optional handoff extensions
 
-1. 先只定义 `qa` 和 `release`
-2. 再补 `review` gate
-3. 最后再看是否真的需要 handoff 扩展槽位
+Do not begin with a giant policy file that tries to encode every edge case on day one.
 
-不要一开始把所有维度都配满，否则容易出现“规则很多，但没人真正遵守”。
+## Relationship To The Manifest
 
-## 与 Manifest 的关系
+- the manifest describes the product surface and host-facing metadata
+- team policy describes team-specific operating rules on top of that surface
 
-当前阶段，policy 可以是独立仓库文件，不要求 manifest 立即强绑定它。
+Those layers should not replace one another.
 
-后续如果要做更强的分发或安装提示，可以考虑在 `primeflow.manifest.json` 增加：
+## Maintenance Principles
 
-- policy file path
-- policy schema version
+- keep the policy explicit
+- keep the policy small
+- version policy changes when they affect team expectations
+- update docs when policy meaning changes
 
-但这属于下一阶段能力，不是这一轮的必需项。
+## First-Round Done Criteria
 
-## 维护原则
+The first useful team policy layer is complete when:
 
-- policy 改动应和普通代码一样走 code review
-- policy 变更要写清楚为什么改
-- 如果 policy 与 PrimeFlow 核心原则冲突，以核心原则为准
-
-## 第一轮 Done 标准
-
-- 团队知道 policy 文件该放哪里
-- 团队知道哪些规则可以覆写
-- `.primeflow/` 与 policy 的边界清楚
-- 团队可以基于示例文件开始讨论自己的默认口径
+- teams can express QA defaults
+- teams can express review strictness
+- teams can express release disclosure requirements
+- the overlay does not distort the core PrimeFlow workflow

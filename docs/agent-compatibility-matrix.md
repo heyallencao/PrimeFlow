@@ -1,43 +1,43 @@
 # PrimeFlow Agent Compatibility Matrix
 
-这份文档不再定义新协议。
+This document does not define a new protocol.
 
-它只做一件事：
+It answers one question:
 
-> 验证当前 `primeflow.manifest.json` 是否已经足够支撑 Claude、Codex、Gemini 三边生成一致入口。
+> Is `primeflow.manifest.json` already strong enough to generate consistent entry surfaces across Claude, Codex, and Gemini?
 
-这里的“一致”不是指 UI 长得一样，而是指：
+Consistency here does not mean identical UI. It means:
 
-- 推荐入口逻辑一致
-- section 分组一致
-- skill 名称和展示顺序一致
-- 调用形态差异来自 agent 能力，而不是另一套 workflow
+- recommendation logic stays aligned
+- section grouping stays aligned
+- public skill names and ordering stay aligned
+- invocation differences come from host capability, not from a different workflow
 
-## 当前结论
+## Current Conclusion
 
-按当前 manifest，PrimeFlow 已经能稳定表达：
+With the current manifest, PrimeFlow can already express:
 
-- 用户意图到 skill 的推荐映射：`recommendedByIntent`
-- section 级菜单顺序：`menuOrder`
-- agent 默认展示风格：`presentationDefaults`
-- skill 的公共分组：`entry_class`
-- 同一分组内的稳定排序：`class_priority`
+- intent-to-skill recommendation through `recommendedByIntent`
+- section-level ordering through `menuOrder`
+- agent presentation defaults through `presentationDefaults`
+- shared skill grouping through `entry_class`
+- stable within-group ordering through `class_priority`
 
-这意味着 agent 侧不需要再手写一套自己的入口分类表。
+That means host integrations no longer need to invent their own entry taxonomy.
 
-注意：这份矩阵只验证 manifest 是否能表达一致入口，不代替真实 agent 调用验证。对外发布前，仍需要在当前 Claude、Codex、Gemini 版本里各跑一次 `/pf-help`。
+This matrix does not replace real host validation. Before release, Claude, Codex, and Gemini should still each run a real `/pf-help` or equivalent public entry.
 
 ## Claude
 
-### 期望消费方式
+### Expected Consumption
 
-- 调用风格：`slash-command`
-- 优先高亮 section：
+- invocation style: `slash-command`
+- highlighted sections:
   - `primaryEntry`
   - `highFrequency`
   - `closeout`
 
-### 入口示例
+### Entry Example
 
 ```text
 Primary Entry:
@@ -61,23 +61,23 @@ Closeout:
 - /pf-knowledge
 ```
 
-### 一致性判断
+### Consistency Read
 
-- Claude 可以把 slash command 作为主要交互入口
-- 但 `help` 仍然只是推荐入口，不拥有正式路由权
-- `orchestrate` 仍然是正式路由中枢，不应被菜单文案包装成“唯一入口”
+- Claude can use slash commands as the main interaction surface
+- `help` still only recommends entry; it does not own formal routing
+- `orchestrate` remains the routing hub and should not be disguised as the only valid entry
 
 ## Codex
 
-### 期望消费方式
+### Expected Consumption
 
-- 调用风格：`slash-command`
-- 优先高亮 section：
+- invocation style: `slash-command`
+- highlighted sections:
   - `primaryEntry`
   - `highFrequency`
   - `mainline`
 
-### 入口示例
+### Entry Example
 
 ```text
 Primary Entry:
@@ -105,42 +105,42 @@ Mainline:
 - /pf-knowledge
 ```
 
-### 一致性判断
+### Consistency Read
 
-- Codex 现在和 Claude 一样直接使用 `/pf-*`
-- `mainline` 的顺序直接来自 `menuOrder`，不需要 agent 自己猜测
-- 同类兜底排序可以使用 `entry_class + class_priority`
+- Codex now uses `/pf-*` directly like Claude
+- `mainline` ordering comes from `menuOrder`
+- same-class fallback ordering can use `entry_class + class_priority`
 
 ## Gemini
 
-### 期望消费方式
+### Expected Consumption
 
-- 调用风格：`slash-command`
-- 优先高亮 section：
+- invocation style: `slash-command`
+- highlighted sections:
   - `primaryEntry`
   - `highFrequency`
   - `mainline`
 
-### 一致性判断
+### Consistency Read
 
-- Gemini 当前和 Codex 共用同一套 `/pf-*` 调用与菜单逻辑
-- 如果后续 Gemini 要高亮 `closeout` 或 `incident`，可以只改 `presentationDefaults`，不用重写技能协议
+- Gemini currently follows the same `/pf-*` contract as Codex
+- if Gemini later wants different highlighted sections, `presentationDefaults` should change before any skill semantics change
 
-## 当前协议边界
+## Current Protocol Boundary
 
-这轮演练也验证了几个边界已经足够清楚：
+This matrix also confirms a few boundaries:
 
-- `recommendedByIntent` 管推荐，不管 section 排序
-- `menuOrder` 是 section 级权威顺序
-- `class_priority` 只在同一 `entry_class` 内生效
-- agent 展示差异优先通过 `presentationDefaults` 表达
+- `recommendedByIntent` handles recommendation, not section ordering
+- `menuOrder` is the authority for section-level ordering
+- `class_priority` only matters within the same `entry_class`
+- agent display differences should be expressed through `presentationDefaults`
 
-## 还没做的事
+## Not Yet Defined
 
-这份协议现在已经足够支撑入口展示，但还没有定义：
+This protocol is sufficient for entry presentation, but it does not yet define:
 
-- agent 侧搜索关键词
-- 每个 skill 的短标题 / badge / icon
-- 更细粒度的“面向新手”与“面向老手”展示文案
+- host-side search keywords
+- short titles, badges, or icons per skill
+- separate display copy for beginners versus power users
 
-这些都可以后续再加，但不属于当前 v1 必须项。
+Those can be added later without changing the workflow contract.

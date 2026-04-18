@@ -1,196 +1,196 @@
 # PrimeFlow Golden Paths
 
-这份文档不是完整协议手册，而是“遇到常见场景时，直接该怎么走”的速查表。
+This is not the full protocol manual. It is the fast reference for common situations: which skill chain to use, where to stop, and when to route backward.
 
-每条路径都尽量满足三件事：
+Each path tries to stay:
 
-- 步数短
-- skill 名称明确
-- 什么时候该停、该回退写清楚
+- short
+- explicit about skill names
+- honest about where to stop, continue, or roll back
 
-## 1. 新功能路径
+## 1. New Feature Path
 
-适合：
+Use when:
 
-- 从零开始做一个新功能
-- 需求目标明确，但还没压成当前块
+- you are starting a new feature from scratch
+- the goal is known, but the current block is not defined yet
 
-推荐路径：
+Recommended path:
 
 ```text
 help -> orchestrate -> roundtable -> writing-plan -> test-first -> implement -> verify -> review
 ```
 
-什么时候停：
+Stop when:
 
-- `review` 通过后，如果这轮只需要完成功能开发闭环，可以先停在这里
+- `review` passed and the round only needs the feature-development loop
 
-什么时候继续：
+Continue when:
 
-- 存在浏览器交互、关键集成链路或高风险运行时行为时，继续 `qa -> ship -> release`
+- browser interaction, critical integration paths, or high runtime risk still require `qa -> ship -> release`
 
-什么时候回退：
+Route backward when:
 
-- 方向不清楚 → 回 `roundtable`
-- 当前块写不清楚 → 回 `writing-plan`
-- 验证发现 bug → 去 `diagnose`
-- 验证发现 spec 偏了 → 回 `writing-plan`
+- direction is still unclear -> `roundtable`
+- the current block is still unclear -> `writing-plan`
+- verification found a bug -> `diagnose`
+- verification found spec drift -> `writing-plan`
 
-## 2. 小修复路径
+## 2. Small Fix Path
 
-适合：
+Use when:
 
-- 小范围修正
-- 已基本知道问题和范围
-- 不一定需要完整从零探索
+- the fix is small
+- the issue and scope are mostly known
+- a full zero-to-one discovery loop is unnecessary
 
-推荐路径：
+Recommended path:
 
 ```text
 help -> brief -> writing-plan -> test-first / implement -> verify -> review
 ```
 
-什么时候停：
+Stop when:
 
-- `review` 通过且不需要交付收口时可以停
+- `review` passed and no formal delivery closeout is needed
 
-什么时候继续：
+Continue when:
 
-- 要准备 PR 说明时，接 `pr-prep`
-- 要进入正式交付时，接 `ship -> release`
+- PR context is needed -> `pr-prep`
+- formal delivery is needed -> `ship -> release`
 
-什么时候回退：
+Route backward when:
 
-- 写 plan 时发现其实范围不小 → 回 `roundtable`
-- verify 发现不是实现 bug，而是 spec 本身不对 → 回 `writing-plan`
+- planning reveals the scope is actually not small -> `roundtable`
+- verify finds a spec problem rather than an implementation bug -> `writing-plan`
 
-## 3. Build-Ready 路径
+## 3. Build-Ready Path
 
-适合：
+Use when:
 
-- 代码已经写完或写了一半
-- 当前重点是验证、审查和收口
+- code already exists, fully or partially
+- the current focus is evidence, review, and closeout
 
-推荐路径：
+Recommended path:
 
 ```text
 help -> verify -> review -> pr-prep -> ship -> release
 ```
 
-什么时候停：
+Stop when:
 
-- 只需要完成代码审查和 PR 上下文时，可停在 `pr-prep`
+- code review and PR context are enough and you do not need release closeout yet
 
-什么时候继续：
+Continue when:
 
-- 需要发布结论或知识沉淀时，继续 `release -> knowledge`
+- release disclosure or knowledge archival is needed -> `release -> knowledge`
 
-什么时候回退：
+Route backward when:
 
-- verify 发现 bug → 去 `diagnose`
-- verify 发现 spec 不成立 → 回 `writing-plan`
-- review blocked → 回 `implement`
+- verify finds a bug -> `diagnose`
+- verify finds spec drift -> `writing-plan`
+- review is blocked -> `implement`
 
-## 4. Incident 路径
+## 4. Incident Path
 
-适合：
+Use when:
 
-- 系统异常
-- 测试挂了
-- 用户路径坏了
-- 线上或高影响环境出现回归
+- the system is failing
+- tests are breaking
+- a user path is down
+- a production or high-impact environment regressed
 
-推荐路径：
+Recommended path:
 
 ```text
 help -> bug-triage -> diagnose -> implement -> verify -> review
 ```
 
-什么时候停：
+Stop when:
 
-- 根因已清楚、修复已验证，但尚未进入交付时可暂时停在 `review`
+- the root cause is known, the fix is verified, and formal delivery has not started yet
 
-什么时候继续：
+Continue when:
 
-- 如果 triage 判断需要优先止损，走 `ship` 做回滚或交付建议
+- triage decides containment or rollback thinking should come first -> `ship`
 
-什么时候回退：
+Route backward when:
 
-- triage 发现其实是 spec 问题 → 回 `writing-plan`
-- diagnose 3 次循环仍无解 → escalate
+- triage reveals a spec problem -> `writing-plan`
+- diagnose still has no answer after 3 loops -> escalate
 
-## 5. PR 收口路径
+## 5. PR Closeout Path
 
-适合：
+Use when:
 
-- 代码和验证基本完成
-- 现在要把改动整理成 reviewer 看得懂、maintainer 能接手的上下文
+- the code and evidence are mostly done
+- the next job is to package the change for reviewers and maintainers
 
-推荐路径：
+Recommended path:
 
 ```text
 help -> verify -> review -> pr-prep -> docs-writer
 ```
 
-什么时候停：
+Stop when:
 
-- PR 描述和交付上下文已经清楚时可停
+- the PR description and delivery context are clear
 
-什么时候继续：
+Continue when:
 
-- 需要进入交付执行 → `ship`
-- 需要对外形成发布结论 → `release`
+- delivery execution is next -> `ship`
+- release disclosure is next -> `release`
 
-什么时候回退：
+Route backward when:
 
-- verify 发现 bug → 去 `diagnose`
-- verify 发现 spec 不成立 → 回 `writing-plan`
-- review 发现问题 → 回 `implement`
-- 文档依赖的事实还没稳定 → 回 `verify` / `review`
+- verify finds a bug -> `diagnose`
+- verify finds spec drift -> `writing-plan`
+- review finds blocking issues -> `implement`
+- the document depends on facts that are not stable yet -> return to `verify` or `review`
 
-## 6. 会话切换路径
+## 6. Session Switch Path
 
-适合：
+Use when:
 
-- 要暂停
-- 要换 agent
-- 要切新会话继续
+- you need to pause
+- you need to switch agents
+- you need to continue in a fresh session
 
-推荐路径：
+Recommended path:
 
 ```text
 help -> handoff out -> handoff in latest -> orchestrate
 ```
 
-什么时候停：
+Stop when:
 
-- `handoff out` 完成后即可暂停
+- `handoff out` finished and the current session should pause
 
-什么时候继续：
+Continue when:
 
-- 恢复后由 `orchestrate` 重新读取现场，决定下一步 skill
+- the restored session should let `orchestrate` reread the context and choose the next skill
 
-什么时候回退：
+Route backward when:
 
-- 恢复预览发现 handoff 不对 → 不继续执行，重新选择 handoff 包
+- the recovery preview is wrong -> do not continue; choose a different handoff package
 
-## 快速选路
+## Fast Entry Table
 
-如果你只想先选一个入口，用这张表：
+If you only want to pick one starting point, use this:
 
-| 现在的情况 | 先用什么 |
-|-----------|---------|
-| 完全不知道从哪开始 | `help` |
-| 信息很多，但还没压成一句任务 | `brief` |
-| 功能从零开始 | `orchestrate` |
-| 问题出现了，但还没判断属于哪类 | `bug-triage` |
-| 代码已写，想先拿证据 | `verify` |
-| 要整理 PR 上下文 | `pr-prep` |
-| 要整理 changelog / ADR / migration note | `docs-writer` |
-| 要暂停或恢复 | `handoff` |
+| Current state | Start with |
+|---|---|
+| no idea where to start | `help` |
+| lots of context, but not one clear task yet | `brief` |
+| new feature from scratch | `orchestrate` |
+| failure exists but the failure type is still unknown | `bug-triage` |
+| code is written and evidence is needed | `verify` |
+| PR context is needed | `pr-prep` |
+| changelog, ADR, or migration note is needed | `docs-writer` |
+| pause or resume is needed | `handoff` |
 
-## 使用建议
+## Usage Notes
 
-- 第一次使用时，不要背所有 skill，先选最像你当前状态的一条路径
-- 路径是推荐，不是强制；但回退规则最好遵守
-- 如果你发现一条路径里总出现 3 个并列分支，说明这条路径还需要继续收敛
+- on your first run, do not memorize all skills; pick the path that most closely matches your current state
+- paths are recommendations, not hard law, but the rollback rules are worth respecting
+- if a path keeps branching into three parallel options, that path still needs convergence

@@ -1,25 +1,57 @@
-# PrimeFlow 维护者路径
+# PrimeFlow Maintainer Guide
 
-这篇文档面向 PrimeFlow 仓库维护者，而不是首次安装和使用 PrimeFlow 的普通用户。
+This document is for repository maintainers, not first-time PrimeFlow users.
 
-如果你只是想把 PrimeFlow 安装到自己的 agent 环境并开始使用，先看 [README.md](../README.md) 和 [installation.md](./installation.md)。
+If you only want to install PrimeFlow into your own host environment and start using it, read [README.md](../README.md) and [installation.md](./installation.md) first.
 
-## 仓库内验证
+If you want the end-to-end staged release playbook, read [RELEASING.md](../RELEASING.md).
 
-如果你是在这个仓库里验证 PrimeFlow 本体，可以走下面这条路径：
+## In-Repo Validation Path
+
+If you want to validate the PrimeFlow product inside this repository, use this path:
 
 ```bash
+npm run test:generated-skill-docs
 npm run smoke
 ./primeflow install --home ./.tmp-home --agent claude
 ./primeflow dist build --output ./dist/release/PrimeFlow
 ./primeflow install --source ./dist/release/PrimeFlow --home ./.tmp-home --agent codex
 ```
 
-这条路径的用途是：
+This path exists to:
 
-- 验证 CLI 和安装逻辑没有回归
-- 验证 release staged payload 可被成功安装
-- 在不污染真实 agent 环境的前提下做仓库内测试
+- verify that committed `.agents` wrappers still match generated output from source skills
+- verify that CLI and install logic did not regress
+- verify that the staged release payload installs correctly
+- test inside a sandbox without polluting real host environments
+
+## Automated Staged Build
+
+PrimeFlow now includes `.github/workflows/release-stage.yml`.
+
+Use it when you want the repository to build the same `release-install-stage` payload in GitHub Actions instead of only on your local machine.
+
+What it does:
+
+- runs `npm run test:generated-skill-docs`
+- runs `npm run test:english-foundation`
+- runs `npm run smoke`
+- runs `npm run build:release-stage`
+- uploads the staged payload directory plus a `.tar.gz` archive and `.sha256` checksum as workflow artifacts
+
+What it does not do:
+
+- publish to npm
+- publish to a marketplace
+- change the supported installation model
+
+The uploaded artifact is still meant for:
+
+```bash
+./primeflow install --source ./dist/release/PrimeFlow --agent codex
+```
+
+in other words, it is the same staged payload model, just built in CI.
 
 ## `smoke`
 
@@ -27,59 +59,59 @@ npm run smoke
 npm run smoke
 ```
 
-当前 smoke test 会覆盖：
+The smoke test currently covers:
 
 - `doctor`
-- `state init` / `state validate`
+- `state init`
 - `handoff create`
 - `install --dry-run`
-- 无 agent 目标时安装失败提示
-- 单 agent 自动检测安装
-- 多 agent 歧义提示
+- missing-host failure messaging
+- single-host auto-detection install
+- multi-host ambiguity messaging
 - `dist build`
 - `install --source`
 
-但 smoke test 不会替你证明真实 agent 里的 `/pf-*` 调用一定可用。对外发布前，至少再做一次当前 Claude / Codex / Gemini 版本里的手动验证，确认 `/pf-help` 能被 agent 正确发现和执行。
+Smoke does not prove that the current host versions will surface `/pf-*` correctly. Before public release, still run a real manual check in the current Claude, Codex, and Gemini versions.
 
-## 沙盒安装
+## Sandbox Install
 
-如果你不想把安装写进真实 `~/.claude`、`~/.codex`、`~/.gemini`，可以显式指定：
+To avoid writing into real host directories, use:
 
 ```bash
 ./primeflow install --home ./.tmp-home --agent claude
 ```
 
-这会把安装目标改到仓库内沙盒目录，例如：
+That redirects installation into sandbox paths such as:
 
 - `./.tmp-home/.claude/skills/PrimeFlow`
 - `./.tmp-home/.primeflow/runtime/PrimeFlow`
 - `./.tmp-home/.agents/skills/pf-help`
 
-## staged payload 验证
+## Staged Payload Validation
 
-构建 staged payload：
+Build the staged payload:
 
 ```bash
 ./primeflow dist build --output ./dist/release/PrimeFlow
 ```
 
-再从该 payload 安装：
+Install from it:
 
 ```bash
 ./primeflow install --source ./dist/release/PrimeFlow --home ./.tmp-home --agent codex
 ```
 
-这条路径用于验证：
+This validates:
 
-- `dist build` 复制了 manifest 定义的 payload
-- `release.json` 被正确写入
-- `install --source` 能从 staged payload 完整安装
+- `dist build` copies the payload described by the manifest
+- `release.json` is written correctly
+- `install --source` can perform a full staged install
 
-## 什么时候看这篇文档
+## When To Read This
 
-以下情况再来看这里：
+Use this document when:
 
-- 你在改 CLI 安装逻辑
-- 你在改分发模型
-- 你在维护 smoke test
-- 你要验证 release-install-stage
+- changing CLI install logic
+- changing the distribution model
+- maintaining the smoke test
+- validating the release-install-stage path

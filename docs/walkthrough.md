@@ -1,197 +1,169 @@
 # PrimeFlow Walkthrough
 
-这不是完整手册，只是一条第一次最好跑通的最小示例。
+This is not the full manual. It is the smallest first run that should make PrimeFlow feel concrete.
 
-目标：
+Goals:
 
-- 让你看懂 PrimeFlow 实际怎么接入
-- 让你知道每个 skill 什么时候该用
-- 不要求你一次读完 18 个 skills
-
----
-
-## 示例任务
-
-给现有登录页补一个 `Continue with GitHub` 入口，并确保：
-
-- 旧登录方式不受影响
-- 新按钮只在 web 端展示
-- 行为、验证、收口都有记录
+- show how PrimeFlow enters real work
+- show when each major skill should be used
+- avoid making you read all 18 skills upfront
 
 ---
 
-## 推荐对 agent 的第一句话
+## Example Task
+
+Add a `Continue with GitHub` entry to an existing login page while keeping these constraints:
+
+- existing login methods must not regress
+- the new button should appear only on the web surface
+- implementation, evidence, and closeout should all be recorded explicitly
+
+## Recommended First Sentence To Your Agent
 
 ```text
-使用 PrimeFlow，从 orchestrate 开始。这是一个从零开始但目标明确的功能：给现有登录页补一个 GitHub OAuth 入口。先判断 entry mode，再按最小闭环推进。
+Use PrimeFlow and start from orchestrate. This is a from-scratch feature with a clear goal: add a GitHub OAuth entry to the existing login page. Determine the correct entry mode, then move through the smallest safe loop.
 ```
 
----
+## Default Mainline For Scratch Work
 
-## 从零开始时的默认推荐链路
-
-如果你是从零开始推进一个任务，PrimeFlow 的默认推荐链路是：
+When you are starting a task from scratch, the default PrimeFlow mainline is:
 
 ```text
 orchestrate -> roundtable -> writing-plan -> test-first -> implement -> verify -> review -> qa? -> ship -> release -> knowledge
 ```
 
-其中：
+Where:
 
-- `qa?` 表示只有任务具备真实运行时风险时才进入 `qa`
-- `knowledge` 是可选收尾；有复用价值时再沉淀
+- `qa?` means QA only runs when real runtime risk exists
+- `knowledge` is optional and only worth entering when the work has future reuse value
 
-这条链路是推荐路径，不是所有任务都必须完整走一遍的强制路径。
+This is a recommended path, not a mandatory chain for every task.
 
----
-
-## 最小路径
+## Smallest Useful Path
 
 ```text
 orchestrate -> roundtable -> writing-plan -> test-first -> implement -> verify -> review
 ```
 
-这条路径已经足够让你第一次感受到 PrimeFlow 的主链。
+That path alone is enough to feel PrimeFlow's core contract.
 
-如果任务要继续上线，再往后接：
+If the task needs production closeout after that:
 
 ```text
 qa -> ship -> release -> knowledge
 ```
 
----
-
-## 每一步在做什么
+## What Each Step Is Doing
 
 ### 1. orchestrate
 
-作用：
+Purpose:
 
-- 判断这是 `from-scratch`
-- 设定初始 `risk_level`
-- 决定先去 `roundtable`
+- recognize that this is `from-scratch`
+- set the initial `risk_level`
+- choose `roundtable` as the next step
 
-你应该看到的结果：
+Expected outcome:
 
-- entry mode 被明确
-- 下一步 skill 被明确
+- the entry mode is explicit
+- the next skill is explicit
 
 ### 2. roundtable
 
-作用：
+Purpose:
 
-- 收敛方案，不直接开写
-- 确认这是新增入口，不是重做整个认证系统
+- converge the direction instead of writing immediately
+- confirm that this is a new entry point, not a rewrite of the whole authentication system
 
-这一阶段最好回答清楚：
+Questions worth answering here:
 
-- GitHub OAuth 入口出现在哪里
-- 是否涉及后端回调
-- 是否需要 feature flag
+- where should the GitHub OAuth entry appear?
+- does the work include backend callback behavior?
+- is a feature flag needed?
 
 ### 3. writing-plan
 
-作用：
+Purpose:
 
-- 把任务收成一个当前任务块
-- 明确完成标准和不做什么
+- compress the task into one executable current block
+- define what counts as done and what stays out of scope
 
-一个合格的当前任务块，至少要写清楚：
+A good current block should say at least:
 
-- 登录页新增 GitHub 按钮
-- 接入现有 OAuth 流程
-- 不改动已有邮箱登录行为
+- add the GitHub button to the login page
+- connect it to the existing OAuth flow
+- do not change the existing email login behavior
 
 ### 4. test-first
 
-作用：
+Purpose:
 
-- 先锁行为边界
-- 防止实现时顺手扩范围
+- lock the behavior boundary before implementation
+- prevent accidental scope creep
 
-这里不一定要写很多测试，但至少要锁住：
+The contract should at least lock:
 
-- GitHub 按钮出现条件
-- 点击后的目标行为
-- 旧登录流程不回归
+- the condition for showing the GitHub button
+- the behavior after clicking it
+- the lack of regression in the existing login flow
 
 ### 5. implement
 
-作用：
+Purpose:
 
-- 只完成当前任务块
-- 不顺手改无关 UI
-- 不把“未来可能需要”一起做掉
+- complete only the approved block
+- avoid unrelated UI cleanup
+- avoid pulling future work into the same diff
 
 ### 6. verify
 
-作用：
+Purpose:
 
-- 拿 fresh evidence
-- 判断是 `pass`、`fail_bug` 还是 `fail_spec`
+- collect fresh evidence
+- decide between `pass`, `fail_bug`, and `fail_spec`
 
-这一步重点不是“我觉得没问题”，而是：
+The key question here is not "does it feel fine?" but:
 
-- 你刚刚实际验证了什么
-- 证据是不是新的
+- what did you actually verify?
+- is that evidence fresh?
 
 ### 7. review
 
-作用：
+Purpose:
 
-- 用 review 的标准做最后一道质量关
-- 决定是否需要 `qa`
+- apply the formal quality gate
+- decide whether QA is still required
 
-如果只是页面按钮和已有认证链路的小改动，review 可能直接给出：
+If the work is a small page-level change on an already-stable auth flow, review may decide that QA is unnecessary. If it touches real runtime risk or important integrations, continue to `qa`.
 
-```text
-next_skill = DONE
-```
+## When To Use Handoff
 
-如果涉及真实浏览器路径或关键集成，再进 `qa`。
+If you need to pause halfway through, do not leave a vague note like "continue later".
 
----
-
-## 什么时候用 handoff
-
-如果做到一半要切会话，不要只留一句“下次继续”。
-
-直接让 agent：
+Use:
 
 ```text
-使用 PrimeFlow，执行 handoff out。
+Use PrimeFlow and run handoff out.
 ```
 
-恢复时：
+To restore:
 
 ```text
-使用 PrimeFlow，执行 handoff in latest。
+Use PrimeFlow and run handoff in latest.
 ```
 
-`handoff` 值得单独记住，不只是因为它能“下次继续”，而是因为它把 AI 工作现场从黑盒压缩变成了白盒状态单元。
+`handoff` is worth remembering because it turns AI context from a black box into an explicit recoverable package.
 
-更直白一点：
+## What Not To Do On Your First Run
 
-- AI 的上下文压缩是黑盒
-- `handoff` 是你能显式控制的白盒恢复点
-- 你切会话、换 agent、暂停工作时，依赖的是可检查的 handoff 包，而不是碰运气的上下文继承
+- do not try to memorize all 18 skills first
+- do not assume `qa`, `ship`, and `release` are mandatory on every task
+- do not skip `writing-plan` and start "thinking while coding"
+- do not treat `verify` as a subjective confidence check
 
-第一次只要实际跑通一次，你就会明白 handoff 为什么是 PrimeFlow 最硬的能力之一。
+## Suggested Reading Order
 
----
-
-## 第一次使用时不要做的事
-
-- 不要一上来试图理解全部 18 个 skills
-- 不要把 `qa` / `ship` / `release` 当成每次都必须走
-- 不要跳过 `writing-plan` 直接进入“边写边想”
-- 不要把 `verify` 当成主观确认
-
----
-
-## 建议的阅读顺序
-
-1. 先看 [README.md](../README.md)
-2. 再跑这篇 walkthrough
-3. 需要协议细节时再看 [SYSTEM.md](../SYSTEM.md)
-4. 需要字段和路由时再看 [STATE.md](../STATE.md) 和 [FRAMEWORK.md](../FRAMEWORK.md)
+1. read [README.md](../README.md)
+2. run this walkthrough once
+3. read [STATE.md](../STATE.md) when you need field-level details
+4. read individual `SKILL.md` files when you need specific behavior contracts

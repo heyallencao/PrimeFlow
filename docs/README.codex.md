@@ -1,6 +1,6 @@
 # PrimeFlow for Codex
 
-Guide for using PrimeFlow with Codex via installed PrimeFlow skills.
+Guide for using PrimeFlow with Codex through the installed public `pf-*` skills.
 
 ## Quick Install
 
@@ -29,22 +29,22 @@ After restart, paste one of these directly into Codex:
 ```
 
 ```text
-/pf-orchestrate 判断这个任务该从哪个 entry mode 接入，再路由到最小安全下一步。
+/pf-orchestrate Route this task from the correct entry mode and choose the smallest safe next step.
 ```
 
 ```text
-/pf-brief 把下面这些散乱背景压成一页可执行简报，并推荐下一步 skill。
+/pf-brief Compress the context below into a one-page execution brief and recommend the next skill.
 ```
 
 ## Generate Codex Skill Docs
 
-If you want the Codex-specific skill docs explicitly in the repo, run:
+If you want the Codex-facing public skill wrappers directly in the repo, run:
 
 ```bash
 ./primeflow gen skill-docs --agent codex --output ./.agents/skills --force
 ```
 
-This generates one `pf-*` skill directory per PrimeFlow entry under `.agents/skills/`.
+This generates one public `pf-*` skill directory per PrimeFlow entry under `.agents/skills/`.
 
 ## How It Works
 
@@ -56,25 +56,25 @@ PrimeFlow installs the public `pf-*` skills to:
 - `~/.agents/skills/pf-review`
 - ...
 
-It also installs the PrimeFlow support bundle to:
+It also installs the shared PrimeFlow runtime to:
 
 - `~/.primeflow/runtime/PrimeFlow`
 
-Codex uses the public `pf-*` skills directly from:
-
-- `~/.agents/skills/pf-*`
-
-The support bundle stays in `~/.primeflow/runtime/PrimeFlow` for CLI access and shared assets. Codex only sees the public `pf-*` skills under `~/.agents/skills`, which avoids duplicate skill entries in the UI.
+Codex reads the public `pf-*` skills from `~/.agents/skills/pf-*`. The shared runtime stays under `~/.primeflow/runtime/PrimeFlow` for CLI access and shared assets. This prevents duplicate skill entries in the Codex UI.
 
 ## Usage
 
-After restart, Codex can call PrimeFlow directly with `/pf-*`. You can:
-
-- call a skill directly, such as `/pf-orchestrate`
-- start with `/pf-help` when you do not know the right entry yet
+After restart, Codex can call PrimeFlow directly with `/pf-*`.
 
 Recommended first entries:
 
 - `help` when you do not know where to start
 - `orchestrate` when you want formal routing
 - `handoff` when you want to pause or resume work
+- `verify` when code already exists and you need fresh evidence
+
+## Related Docs
+
+- [Quickstart](./quickstart.md)
+- [Language Policy](./language-policy.md)
+- [Installation](./installation.md)
