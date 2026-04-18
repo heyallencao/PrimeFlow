@@ -31,57 +31,32 @@ PrimeFlow's entry point. One job: give the user one copy-ready next sentence.
 
 ## Procedure
 
-### Step 1: Run first-run ritual if needed
+### Step 1: Run first-run intro if needed
 
-Check for flag files. Each gate fires exactly once. Never nag.
+Check if this is the user's first time. `state init` already created flag files and set defaults. This step only prints the intro message once.
 
 ```bash
 _PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-mkdir -p .primeflow
+_FIRST_RUN=$($_PF_CLI state get first_run_complete 2>/dev/null | tr -d '"')
 
-# Gate 1: first-run intro
-if [ ! -f ".primeflow/.first-run" ]; then
-  touch .primeflow/.first-run
+if [ "$_FIRST_RUN" != "true" ]; then
+  $_PF_CLI state set first_run_complete true >/dev/null 2>&1 || true
   echo "=== First Run ==="
   echo "PrimeFlow: flexible entry, honest exit."
   echo "You can finish your first real task in about 5 minutes."
   echo "Quickstart: docs/quickstart.md"
   echo ""
-fi
-
-# Gate 2: telemetry consent
-if [ ! -f ".primeflow/.telemetry-consent" ]; then
-  touch .primeflow/.telemetry-consent
-  _CONSENT_SET=false
-  if [ -f ".primeflow/state.json" ]; then
-    _EXISTING=$($_PF_CLI state get telemetry_consent 2>/dev/null | tr -d '"')
-    if [ "$_EXISTING" != "null" ] && [ -n "$_EXISTING" ]; then
-      _CONSENT_SET=true
-    fi
-  fi
-  if [ "$_CONSENT_SET" = "false" ]; then
-    echo "PrimeFlow logs routing decisions to .primeflow/telemetry/."
-    echo "Choose: community (shared anonymously) / anonymous (local only) / off"
-    echo "Default: off. You can change this anytime via state."
-    $_PF_CLI state set telemetry_consent "off" >/dev/null 2>&1 || true
-  fi
-fi
-
-# Gate 3: proactive skill suggestions
-if [ ! -f ".primeflow/.proactive-consent" ]; then
-  touch .primeflow/.proactive-consent
-  if [ -f ".primeflow/state.json" ]; then
-    _PROACTIVE=$($_PF_CLI state get proactive_consent 2>/dev/null | tr -d '"')
-    if [ "$_PROACTIVE" = "null" ] || [ -z "$_PROACTIVE" ]; then
-      $_PF_CLI state set proactive_consent "false" >/dev/null 2>&1 || true
-    fi
-  fi
+  echo "Telemetry is off by default. Change with:"
+  echo "  ./primeflow state set telemetry_consent community"
+  echo "  ./primeflow state set telemetry_consent anonymous"
+  echo "  ./primeflow state set telemetry_consent off"
+  echo ""
 fi
 ```
 
-- expected: 3 flag files created under `.primeflow/` on first run only
-- subsequent runs: all flags exist, ritual skipped silently
-- non-interactive: default telemetry=off, proactive=false, create flags silently
+- expected: first_run_complete set to true in state on first run only
+- subsequent runs: first_run_complete is already true, intro skipped silently
+- non-interactive: defaults are telemetry=off, proactive=false (set by state init)
 
 ### Step 2: Determine the current situation
 

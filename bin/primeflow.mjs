@@ -228,6 +228,7 @@ function parseDoctorArgs(args) {
 function parseInstallArgs(args) {
   const options = {
     dryRun: false,
+    verbose: false,
     agents: [],
     home: process.env.PRIMEFLOW_HOME ? path.resolve(process.env.PRIMEFLOW_HOME) : homeDir(),
     source: packageRoot,
@@ -239,6 +240,10 @@ function parseInstallArgs(args) {
     const arg = args[index];
     if (arg === "--dry-run") {
       options.dryRun = true;
+      continue;
+    }
+    if (arg === "--verbose" || arg === "-v") {
+      options.verbose = true;
       continue;
     }
     if (arg === "--agent" || arg === "--host") {
@@ -333,12 +338,20 @@ function resolveInstallAgents(options, manifest) {
   }
 
   if (detectedAgents.length === 0) {
-    fail(
-      `No supported agent target detected under ${options.home}.\n` +
-      `Use one of:\n` +
-      `  ${cliName} install --agent <claude|codex|gemini>\n` +
-      `  ${cliName} install --agents claude,codex`
-    );
+    say("");
+    say(`No supported agent target detected under ${options.home}.`);
+    say("");
+    say("PrimeFlow works with Claude Code, Codex CLI, or Gemini CLI.");
+    say("Install at least one, then re-run this command.");
+    say("");
+    say("  Claude Code:  https://docs.anthropic.com/en/docs/claude-code");
+    say("  Codex CLI:    https://github.com/openai/codex");
+    say("  Gemini CLI:   https://github.com/google-gemini/gemini-cli");
+    say("");
+    say(`Or specify an agent manually:`);
+    say(`  ${cliName} install --agent <claude|codex|gemini>`);
+    say(`  ${cliName} install --agents claude,codex`);
+    process.exit(1);
   }
 
   fail(
@@ -640,10 +653,10 @@ function validateRuntimeInstallPlan(plan) {
   }
 }
 
-function runCopyOperations(operations, dryRun) {
+function runCopyOperations(operations, dryRun, verbose = false) {
   for (const operation of operations) {
     if (operation.type === "copy") {
-      say(`[copy] ${operation.source} -> ${operation.target}`);
+      if (verbose) say(`[copy] ${operation.source} -> ${operation.target}`);
       if (!dryRun) {
         copyRecursive(operation.source, operation.target);
       }
@@ -651,7 +664,7 @@ function runCopyOperations(operations, dryRun) {
     }
 
     if (operation.type === "write") {
-      say(`[write] ${operation.target}`);
+      if (verbose) say(`[write] ${operation.target}`);
       if (!dryRun) {
         ensureDir(path.dirname(operation.target));
         fs.writeFileSync(operation.target, operation.content, "utf8");
@@ -857,9 +870,16 @@ function installCommand(args) {
     // Clean any leftover stage directory from a previous interrupted run before copying.
     fs.rmSync(runtimePlan.stageRoot, { recursive: true, force: true });
   }
-  runCopyOperations(runtimePlan.operations, options.dryRun);
-  for (const cleanupTarget of runtimePlan.cleanupTargets) {
-    say(`[remove] ${cleanupTarget}`);
+  const verbose = options.verbose;
+  runCopyOperations(runtimePlan.operations, options.dryRun, verbose);
+  if (verbose) {
+    for (const cleanupTarget of runtimePlan.cleanupTargets) {
+      say(`[remove] ${cleanupTarget}`);
+    }
+  } else if (runtimePlan.cleanupTargets.length > 0 && !options.dryRun) {
+    for (const cleanupTarget of runtimePlan.cleanupTargets) {
+      fs.rmSync(cleanupTarget, { recursive: true, force: true });
+    }
   }
 
   for (const plan of plans) {
@@ -868,7 +888,7 @@ function installCommand(args) {
     } else {
       say(`Agent public skills (${plan.agent}): ${path.join(options.home, ".agents", "skills")}`);
     }
-    runHostOperations(plan.agentOperations, true);
+    runHostOperations(plan.agentOperations, options.dryRun, !verbose);
   }
 
   if (options.dryRun) {
@@ -1381,6 +1401,15 @@ function stateCommand(args) {
       return;
     }
     writeState(defaultState());
+    // Create first-run flag files so pf-help ritual does not need manual bash
+    ensureDir(primeflowRoot);
+    const flagFiles = [".first-run", ".telemetry-consent", ".proactive-consent"];
+    for (const flag of flagFiles) {
+      const flagPath = path.join(primeflowRoot, flag);
+      if (!fs.existsSync(flagPath)) {
+        fs.writeFileSync(flagPath, new Date().toISOString(), "utf8");
+      }
+    }
     say(statePath);
     return;
   }
@@ -1405,7 +1434,6 @@ function stateCommand(args) {
     if (!key || rawValue === undefined) fail(`Usage: ${cliName} state set <key> <value> [--json]`);
     setValue(state, key, parseValue(rawValue, asJson));
     writeState(state);
-    say(statePath);
     return;
   }
 
