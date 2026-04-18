@@ -301,7 +301,7 @@ Output format:
 - **Trigger**: routing_count > 5 without stage change
 - **Procedure**: set escalate=true, routing=escalate, confidence=0.3
 - **Recovery**: user must inspect state and manually set current_stage or clear routing_count
-- **State update**: exit_code=pasued, exit_reason contains loop warning
+- **State update**: exit_code=paused, exit_reason contains loop warning
 
 ## Exception: State file corrupted or missing after init
 

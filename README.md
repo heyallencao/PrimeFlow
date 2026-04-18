@@ -155,6 +155,7 @@ PrimeFlow installs public `pf-*` skills into `~/.agents/skills` and the shared r
 - [Distribution Model](docs/distribution-model.md) - runtime layout, packaging, and dist builds
 - [Team Policy](docs/team-policy.md) - shared QA, review, and release rules
 - [State Structure](STATE.md) - workflow state fields and semantics
+- [Known Solutions](docs/solutions/) - indexed knowledge artifacts for recurring bugs and patterns
 
 ## Language Policy
 

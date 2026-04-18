@@ -1810,8 +1810,8 @@ function knowledgeCommand(args) {
   }
 
   if (subcommand === "check") {
-    // Discoverability check: verify docs/solutions/ is referenced from CLAUDE.md or AGENTS.md
-    const referenceFiles = ["CLAUDE.md", "AGENTS.md"].map((f) => path.join(projectRoot, f));
+    // Discoverability check: verify docs/solutions/ is referenced from entry files
+    const referenceFiles = ["CLAUDE.md", "AGENTS.md", "README.md", "FRAMEWORK.md", "SYSTEM.md"].map((f) => path.join(projectRoot, f));
     let referenced = false;
     for (const rf of referenceFiles) {
       if (fs.existsSync(rf)) {
@@ -1823,9 +1823,9 @@ function knowledgeCommand(args) {
       }
     }
     if (!referenced) {
-      say("GAP: docs/solutions/ is not referenced in CLAUDE.md or AGENTS.md");
+      say("GAP: docs/solutions/ is not referenced in any entry file (CLAUDE.md, AGENTS.md, README.md, FRAMEWORK.md, SYSTEM.md)");
       say("Knowledge artifacts may not be found by future sessions.");
-      say("Add a line like: 'Known solutions: docs/solutions/' to CLAUDE.md");
+      say("Add a line like: 'Known solutions: docs/solutions/' to one of the entry files above.");
     }
 
     // Count artifacts
