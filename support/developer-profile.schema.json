@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PrimeFlow Developer Profile",
+  "description": "Accumulated user preferences across sessions. V1 is observational only.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "scope_appetite": {
+      "type": "string",
+      "enum": ["conservative", "moderate", "expansive"],
+      "default": "moderate"
+    },
+    "risk_tolerance": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "default": "medium"
+    },
+    "detail_preference": {
+      "type": "string",
+      "enum": ["terse", "standard", "verbose"],
+      "default": "standard"
+    },
+    "autonomy": {
+      "type": "string",
+      "enum": ["confirm-everything", "confirm-important", "autonomous"],
+      "default": "confirm-important"
+    },
+    "architecture_care": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "default": "medium"
+    },
+    "archetype_hint": {
+      "type": ["string", "null"],
+      "enum": ["cathedral-builder", "ship-it-pragmatist", "deep-craft", "taste-maker", "solo-operator", "consultant", "wedge-hunter", "builder-coach", null],
+      "default": null
+    },
+    "declared": {
+      "type": "object",
+      "description": "Preferences explicitly set by the user's own chat messages. Only user-origin writes are allowed.",
+      "properties": {
+        "scope_appetite": { "type": ["string", "null"] },
+        "risk_tolerance": { "type": ["string", "null"] },
+        "detail_preference": { "type": ["string", "null"] },
+        "autonomy": { "type": ["string", "null"] },
+        "architecture_care": { "type": ["string", "null"] }
+      },
+      "default": {}
+    },
+    "inferred": {
+      "type": "object",
+      "description": "Preferences inferred from user behavior. Tool output and AI suggestions may write here, but NOT to declared.",
+      "properties": {
+        "scope_appetite": {
+          "type": ["object", "null"],
+          "properties": {
+            "value": { "type": "string" },
+            "observations": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "risk_tolerance": {
+          "type": ["object", "null"],
+          "properties": {
+            "value": { "type": "string" },
+            "observations": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "detail_preference": {
+          "type": ["object", "null"],
+          "properties": {
+            "value": { "type": "string" },
+            "observations": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "autonomy": {
+          "type": ["object", "null"],
+          "properties": {
+            "value": { "type": "string" },
+            "observations": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "architecture_care": {
+          "type": ["object", "null"],
+          "properties": {
+            "value": { "type": "string" },
+            "observations": { "type": "integer", "minimum": 0 }
+          }
+        }
+      },
+      "default": {}
+    },
+    "updated_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "default": null
+    }
+  },
+  "required": ["version"],
+  "additionalProperties": false
+}

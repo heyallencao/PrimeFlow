@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# PrimeFlow
+.primeflow/
+
+# Temp directories
+tmp/
+dist/
+.tmp-home/
+._tmp-release-home/
+._review-home/
+
+# Claude / Codex
+.codex/
+.agents/
+.claude/
+
+# macOS
+.DS_Store
+._*
+
+# Editor
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# Templates (generated/cache)
+templates/.cache/

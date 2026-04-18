@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "qa": {
+    "default_required_for": [
+      "frontend-user-path",
+      "browser-interaction",
+      "critical-integration"
+    ],
+    "default_skipped_for": [
+      "docs-only",
+      "copy-only",
+      "internal-script"
+    ]
+  },
+  "review": {
+    "block_on": ["P0", "P1"],
+    "extra_personas": {
+      "auth": ["security-reviewer"],
+      "migration": ["data-migrations-reviewer"]
+    }
+  },
+  "release": {
+    "must_disclose": [
+      "skipped-qa",
+      "partial-qa",
+      "known-risks"
+    ]
+  },
+  "handoff": {
+    "extra_slots": [
+      "rollback-command",
+      "oncall-owner"
+    ]
+  }
+}

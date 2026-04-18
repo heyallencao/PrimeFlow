@@ -1,0 +1,333 @@
+{
+  "product": {
+    "name": "PrimeFlow",
+    "summary": "Cross-agent workflow skill bundle with shared-runtime install and agent-native invocation.",
+    "description": "PrimeFlow installs one shared runtime, then exposes stable pf-* public names through agent-native integration layers."
+  },
+  "distribution": {
+    "defaultInstallModel": "shared-runtime",
+    "sharedRuntimeDir": "~/.primeflow/runtime/PrimeFlow",
+    "defaultEntrySkill": "pf-orchestrate",
+    "payload": {
+      "include": [
+        "README.md",
+        "FRAMEWORK.md",
+        "STATE.md",
+        "SYSTEM.md",
+        "LICENSE",
+        "package.json",
+        "primeflow.manifest.json",
+        "primeflow",
+        "primeflow.cmd",
+        "bin",
+        "decision",
+        "docs",
+        "examples",
+        "execution",
+        "operation",
+        "orchestration",
+        "scripts",
+        "support",
+        "templates",
+        "primeflow.policy.example.json"
+      ]
+    }
+  },
+  "agentFacing": {
+    "primaryEntrySkills": [
+      "pf-help",
+      "pf-orchestrate",
+      "pf-handoff"
+    ],
+    "highFrequencySkills": [
+      "pf-help",
+      "pf-brief",
+      "pf-bug-triage",
+      "pf-pr-prep",
+      "pf-docs-writer"
+    ],
+    "closeoutSkills": [
+      "pf-review",
+      "pf-pr-prep",
+      "pf-ship",
+      "pf-release",
+      "pf-docs-writer",
+      "pf-knowledge"
+    ],
+    "recommendedByIntent": [
+      {
+        "intent": "unknown-start",
+        "skill": "pf-help",
+        "contract": "recommend-only"
+      },
+      {
+        "intent": "formal-routing",
+        "skill": "pf-orchestrate",
+        "contract": "formal-router"
+      },
+      {
+        "intent": "session-switch",
+        "skill": "pf-handoff",
+        "contract": "session-router"
+      },
+      {
+        "intent": "compress-context",
+        "skill": "pf-brief",
+        "contract": "pre-routing-sidecar"
+      },
+      {
+        "intent": "bug-classification",
+        "skill": "pf-bug-triage",
+        "contract": "pre-routing-sidecar"
+      },
+      {
+        "intent": "pr-closeout-context",
+        "skill": "pf-pr-prep",
+        "contract": "closeout-sidecar"
+      },
+      {
+        "intent": "stable-doc-draft",
+        "skill": "pf-docs-writer",
+        "contract": "closeout-sidecar"
+      }
+    ],
+    "menuOrder": {
+      "primaryEntry": [
+        "pf-help",
+        "pf-orchestrate",
+        "pf-handoff"
+      ],
+      "highFrequency": [
+        "pf-help",
+        "pf-brief",
+        "pf-bug-triage",
+        "pf-pr-prep",
+        "pf-docs-writer"
+      ],
+      "mainline": [
+        "pf-orchestrate",
+        "pf-roundtable",
+        "pf-writing-plan",
+        "pf-test-first",
+        "pf-implement",
+        "pf-verify",
+        "pf-review",
+        "pf-qa",
+        "pf-ship",
+        "pf-release",
+        "pf-knowledge"
+      ],
+      "incident": [
+        "pf-help",
+        "pf-bug-triage",
+        "pf-diagnose",
+        "pf-ship"
+      ],
+      "closeout": [
+        "pf-review",
+        "pf-pr-prep",
+        "pf-ship",
+        "pf-release",
+        "pf-docs-writer",
+        "pf-knowledge"
+      ]
+    },
+    "presentationDefaults": {
+      "claude": {
+        "preferredInvocationStyle": "slash-command",
+        "highlightSections": [
+          "primaryEntry",
+          "highFrequency",
+          "closeout"
+        ]
+      },
+      "codex": {
+        "preferredInvocationStyle": "slash-command",
+        "highlightSections": [
+          "primaryEntry",
+          "highFrequency",
+          "mainline"
+        ]
+      },
+      "gemini": {
+        "preferredInvocationStyle": "slash-command",
+        "highlightSections": [
+          "primaryEntry",
+          "highFrequency",
+          "mainline"
+        ]
+      }
+    }
+  },
+  "agents": {
+    "claude": {
+      "markerDir": ".claude",
+      "skillDir": ".claude/skills/PrimeFlow",
+      "defaultInstallTarget": "~/.claude/skills/PrimeFlow",
+      "mountRuntime": true,
+      "commandDir": ".claude/commands",
+      "slashAliases": true,
+      "invocation": "Use /pf-help when you do not know where to start, or /pf-orchestrate when you want formal routing."
+    },
+    "codex": {
+      "markerDir": ".codex",
+      "skillDir": ".codex/skills/PrimeFlow",
+      "mountRuntime": false,
+      "slashAliases": false,
+      "invocation": "Restart Codex, then start with /pf-help or /pf-orchestrate. Public pf-* skills are installed under ~/.agents/skills/."
+    },
+    "gemini": {
+      "markerDir": ".gemini",
+      "skillDir": ".gemini/skills/PrimeFlow",
+      "mountRuntime": false,
+      "slashAliases": false,
+      "invocation": "Restart Gemini, then start with /pf-help or /pf-orchestrate. Public pf-* skills are installed under ~/.agents/skills/."
+    }
+  },
+  "skills": [
+    {
+      "name": "pf-help",
+      "alias": "pf-help",
+      "entry": "support/help/SKILL.md",
+      "summary": "PrimeFlow first-run entry that recommends the right starting skill for the current situation.",
+      "entry_class": "primary-entry",
+      "class_priority": 10
+    },
+    {
+      "name": "pf-orchestrate",
+      "alias": "pf-orchestrate",
+      "entry": "orchestration/orchestrate/SKILL.md",
+      "summary": "Determine the correct PrimeFlow entry mode and route the request to the next skill.",
+      "entry_class": "primary-entry",
+      "class_priority": 20
+    },
+    {
+      "name": "pf-handoff",
+      "alias": "pf-handoff",
+      "entry": "orchestration/handoff/SKILL.md",
+      "summary": "Create, restore, and list PrimeFlow handoff packages.",
+      "entry_class": "primary-entry",
+      "class_priority": 30
+    },
+    {
+      "name": "pf-roundtable",
+      "alias": "pf-roundtable",
+      "entry": "decision/roundtable/SKILL.md",
+      "summary": "Converge direction through brainstorm, align, or challenge mode.",
+      "entry_class": "mainline",
+      "class_priority": 20
+    },
+    {
+      "name": "pf-brief",
+      "alias": "pf-brief",
+      "entry": "decision/brief/SKILL.md",
+      "summary": "Compress messy input into a one-page brief, then route to roundtable or writing-plan.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 20
+    },
+    {
+      "name": "pf-writing-plan",
+      "alias": "pf-writing-plan",
+      "entry": "decision/writing-plan/SKILL.md",
+      "summary": "Turn an approved direction into one executable current block.",
+      "entry_class": "mainline",
+      "class_priority": 30
+    },
+    {
+      "name": "pf-review",
+      "alias": "pf-review",
+      "entry": "decision/review/SKILL.md",
+      "summary": "Use verify evidence to make the formal quality-gate decision.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 10
+    },
+    {
+      "name": "pf-test-first",
+      "alias": "pf-test-first",
+      "entry": "execution/test-first/SKILL.md",
+      "summary": "Lock behavior first, then move into implementation.",
+      "entry_class": "mainline",
+      "class_priority": 40
+    },
+    {
+      "name": "pf-implement",
+      "alias": "pf-implement",
+      "entry": "execution/implement/SKILL.md",
+      "summary": "Complete the current block inside an explicit scope boundary.",
+      "entry_class": "mainline",
+      "class_priority": 50
+    },
+    {
+      "name": "pf-verify",
+      "alias": "pf-verify",
+      "entry": "execution/verify/SKILL.md",
+      "summary": "Collect fresh evidence and verify the implementation against the current done criteria.",
+      "entry_class": "mainline",
+      "class_priority": 60
+    },
+    {
+      "name": "pf-diagnose",
+      "alias": "pf-diagnose",
+      "entry": "execution/diagnose/SKILL.md",
+      "summary": "Investigate abnormal behavior before deciding whether to fix or roll back.",
+      "entry_class": "mainline",
+      "class_priority": 70
+    },
+    {
+      "name": "pf-bug-triage",
+      "alias": "pf-bug-triage",
+      "entry": "execution/bug-triage/SKILL.md",
+      "summary": "Classify the issue as spec gap, implementation bug, or rollback candidate.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 30
+    },
+    {
+      "name": "pf-qa",
+      "alias": "pf-qa",
+      "entry": "operation/qa/SKILL.md",
+      "summary": "Run real browser or runtime validation when review requires it.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 20
+    },
+    {
+      "name": "pf-pr-prep",
+      "alias": "pf-pr-prep",
+      "entry": "operation/pr-prep/SKILL.md",
+      "summary": "Turn post-review changes into ready-to-use PR and merge context.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 40
+    },
+    {
+      "name": "pf-ship",
+      "alias": "pf-ship",
+      "entry": "operation/ship/SKILL.md",
+      "summary": "Close out delivery with final checks and release guidance.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 30
+    },
+    {
+      "name": "pf-release",
+      "alias": "pf-release",
+      "entry": "operation/release/SKILL.md",
+      "summary": "Make an honest release decision with risks and disclosure.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 40
+    },
+    {
+      "name": "pf-docs-writer",
+      "alias": "pf-docs-writer",
+      "entry": "support/docs-writer/SKILL.md",
+      "summary": "Turn completed implementation, verification, or release results into stable docs.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 50
+    },
+    {
+      "name": "pf-knowledge",
+      "alias": "pf-knowledge",
+      "entry": "support/knowledge/SKILL.md",
+      "summary": "Retrieve and compound reusable knowledge.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 50
+    }
+  ]
+}
