@@ -1,10 +1,10 @@
-# PrimeFlow Agent Compatibility Matrix
+# Keystone Agent Compatibility Matrix
 
 This document does not define a new protocol.
 
 It answers one question:
 
-> Is `primeflow.manifest.json` already strong enough to generate consistent entry surfaces across Claude, Codex, and Gemini?
+> Is `keystone.manifest.json` already strong enough to generate consistent entry surfaces across Claude, Codex, and Gemini?
 
 Consistency here does not mean identical UI. It means:
 
@@ -15,7 +15,7 @@ Consistency here does not mean identical UI. It means:
 
 ## Current Conclusion
 
-With the current manifest, PrimeFlow can already express:
+With the current manifest, Keystone can already express:
 
 - intent-to-skill recommendation through `recommendedByIntent`
 - section-level ordering through `menuOrder`
@@ -25,7 +25,7 @@ With the current manifest, PrimeFlow can already express:
 
 That means host integrations no longer need to invent their own entry taxonomy.
 
-This matrix does not replace real host validation. Before release, Claude, Codex, and Gemini should still each run a real `/pf-help` or equivalent public entry.
+This matrix does not replace real host validation. Before release, Claude, Codex, and Gemini should still each run a real `/ks-help` or equivalent public entry.
 
 ## Claude
 
@@ -41,24 +41,24 @@ This matrix does not replace real host validation. Before release, Claude, Codex
 
 ```text
 Primary Entry:
-- /pf-help
-- /pf-orchestrate
-- /pf-handoff
+- /ks-help
+- /ks-orchestrate
+- /ks-handoff
 
 High Frequency:
-- /pf-help
-- /pf-brief
-- /pf-bug-triage
-- /pf-pr-prep
-- /pf-docs-writer
+- /ks-help
+- /ks-brief
+- /ks-bug-triage
+- /ks-pr-prep
+- /ks-docs-writer
 
 Closeout:
-- /pf-review
-- /pf-pr-prep
-- /pf-ship
-- /pf-release
-- /pf-docs-writer
-- /pf-knowledge
+- /ks-review
+- /ks-pr-prep
+- /ks-ship
+- /ks-release
+- /ks-docs-writer
+- /ks-knowledge
 ```
 
 ### Consistency Read
@@ -81,33 +81,33 @@ Closeout:
 
 ```text
 Primary Entry:
-- /pf-help
-- /pf-orchestrate
-- /pf-handoff
+- /ks-help
+- /ks-orchestrate
+- /ks-handoff
 
 High Frequency:
-- /pf-brief
-- /pf-bug-triage
-- /pf-pr-prep
-- /pf-docs-writer
+- /ks-brief
+- /ks-bug-triage
+- /ks-pr-prep
+- /ks-docs-writer
 
 Mainline:
-- /pf-orchestrate
-- /pf-roundtable
-- /pf-writing-plan
-- /pf-test-first
-- /pf-implement
-- /pf-verify
-- /pf-review
-- /pf-qa
-- /pf-ship
-- /pf-release
-- /pf-knowledge
+- /ks-orchestrate
+- /ks-roundtable
+- /ks-writing-plan
+- /ks-test-first
+- /ks-implement
+- /ks-verify
+- /ks-review
+- /ks-qa
+- /ks-ship
+- /ks-release
+- /ks-knowledge
 ```
 
 ### Consistency Read
 
-- Codex now uses `/pf-*` directly like Claude
+- Codex now uses `/ks-*` directly like Claude
 - `mainline` ordering comes from `menuOrder`
 - same-class fallback ordering can use `entry_class + class_priority`
 
@@ -123,7 +123,7 @@ Mainline:
 
 ### Consistency Read
 
-- Gemini currently follows the same `/pf-*` contract as Codex
+- Gemini currently follows the same `/ks-*` contract as Codex
 - if Gemini later wants different highlighted sections, `presentationDefaults` should change before any skill semantics change
 
 ## Current Protocol Boundary

@@ -1,5 +1,5 @@
 ---
-name: pf-verify
+name: ks-verify
 description: "Use this when tests or runtime checks must be run to confirm a claim with fresh evidence before formal review."
 layer: execution
 owner: verify
@@ -59,16 +59,16 @@ Common cases:
 ### Step 0: Read current state
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 _CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 echo "Branch: $_CURRENT_BRANCH"
 _PENDING=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 echo "Pending changes: $_PENDING"
-if [ -f ".primeflow/state.json" ]; then
-  echo "Stage: $($_PF_CLI state get current_stage 2>/dev/null | tr -d '"')"
-  echo "Last skill: $($_PF_CLI state get last_skill 2>/dev/null | tr -d '"')"
-  echo "Entry mode: $($_PF_CLI state get entry_mode 2>/dev/null | tr -d '"')"
-  echo "Risk level: $($_PF_CLI state get risk_level 2>/dev/null | tr -d '"')"
+if [ -f ".keystone/state.json" ]; then
+  echo "Stage: $($_KS_CLI state get current_stage 2>/dev/null | tr -d '"')"
+  echo "Last skill: $($_KS_CLI state get last_skill 2>/dev/null | tr -d '"')"
+  echo "Entry mode: $($_KS_CLI state get entry_mode 2>/dev/null | tr -d '"')"
+  echo "Risk level: $($_KS_CLI state get risk_level 2>/dev/null | tr -d '"')"
 fi
 ```
 
@@ -78,7 +78,7 @@ Expected: stage is `implement` or later, entry mode is `build-ready`/`release-re
 
 ```bash
 echo "=== Prerequisite Check ==="
-_IMPLEMENT_RESULT=$($_PF_CLI state get last_decision 2>/dev/null | tr -d '"')
+_IMPLEMENT_RESULT=$($_KS_CLI state get last_decision 2>/dev/null | tr -d '"')
 echo "Last decision: $_IMPLEMENT_RESULT"
 ```
 
@@ -86,7 +86,7 @@ If `last_decision` is not `implement-complete` and not a controlled-exception en
 
 ```bash
 _TEST_CONTRACT=""
-for _tc in "test_contract.md" ".primeflow/test_contract.md"; do
+for _tc in "test_contract.md" ".keystone/test_contract.md"; do
   [ -f "$_tc" ] && { _TEST_CONTRACT="$_tc"; break; }
 done
 echo "Test contract: ${_TEST_CONTRACT:-not found}"
@@ -96,7 +96,7 @@ If empty → jump to [Exception: No test contract](#exception-no-test-contract).
 
 ```bash
 _PLAN_DOC=""
-for _p in "plan.md" ".primeflow/plan.md" "writing-plan.md" ".primeflow/writing-plan.md"; do
+for _p in "plan.md" ".keystone/plan.md" "writing-plan.md" ".keystone/writing-plan.md"; do
   [ -f "$_p" ] && { _PLAN_DOC="$_p"; break; }
 done
 echo "Plan document: ${_PLAN_DOC:-not found}"
@@ -260,7 +260,7 @@ Step 1 found no `test_contract` file. Check whether `writing-plan` explicitly ap
 
 ```bash
 _EXCEPTION_APPROVED=""
-[ -f ".primeflow/state.json" ] && _EXCEPTION_APPROVED=$($_PF_CLI state get controlled_exception 2>/dev/null | tr -d '"')
+[ -f ".keystone/state.json" ] && _EXCEPTION_APPROVED=$($_KS_CLI state get controlled_exception 2>/dev/null | tr -d '"')
 ```
 
 Decision:
@@ -306,10 +306,10 @@ If any done criterion cannot be evidenced → `fail_spec`. Route to `writing-pla
 ```bash
 _VERIFY_RESULT="${VERIFY_RESULT:?set VERIFY_RESULT to pass|fail_bug|fail_spec}"
 _VERIFY_DECISION="${VERIFY_DECISION:?set VERIFY_DECISION to verify-pass|verify-fail-bug|verify-fail-spec}"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set current_stage "verify" >/dev/null
-$_PF_CLI state set verify_result "$_VERIFY_RESULT" >/dev/null
-$_PF_CLI state set last_decision "$_VERIFY_DECISION" >/dev/null
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set current_stage "verify" >/dev/null
+$_KS_CLI state set verify_result "$_VERIFY_RESULT" >/dev/null
+$_KS_CLI state set last_decision "$_VERIFY_DECISION" >/dev/null
 
 case "$_VERIFY_RESULT" in
   pass)
@@ -325,9 +325,9 @@ case "$_VERIFY_RESULT" in
     _EXIT_REASON="The spec drifted and the scope must be realigned"
     ;;
 esac
-$_PF_CLI state set exit_code "ok" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
+$_KS_CLI state set exit_code "ok" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```
 
 ## Telemetry
@@ -335,7 +335,7 @@ $_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```bash
 _TEST_PASS="${TEST_PASS:-0}"
 _TEST_FAIL="${TEST_FAIL:-0}"
-echo "{\"skill\":\"verify\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_VERIFY_DECISION\",\"confidence\":0.9,\"test_pass\":$_TEST_PASS,\"test_fail\":$_TEST_FAIL,\"verify_result\":\"$_VERIFY_RESULT\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"verify\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_VERIFY_DECISION\",\"confidence\":0.9,\"test_pass\":$_TEST_PASS,\"test_fail\":$_TEST_FAIL,\"verify_result\":\"$_VERIFY_RESULT\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

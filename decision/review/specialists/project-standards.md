@@ -1,7 +1,7 @@
 # Project Standards Reviewer
 
 ## Check Scope
-PrimeFlow policy compliance, repository conventions, file organization, naming conventions, import patterns, export patterns, config format, documentation standards.
+Keystone policy compliance, repository conventions, file organization, naming conventions, import patterns, export patterns, config format, documentation standards.
 
 ## Report Format
 ```json
@@ -34,7 +34,7 @@ Never skip. Every diff should be checked against project standards.
 
 ## Conventions to Check
 - SKILL.md has frontmatter with required fields
-- State mutations use `$_PF_CLI state set`
+- State mutations use `$_KS_CLI state set`
 - Telemetry events follow the JSONL format
 - Decision contract is present and uses stable kebab-case labels
 - New files follow the layer directory structure

@@ -1,0 +1,333 @@
+{
+  "product": {
+    "name": "Keystone",
+    "summary": "Cross-agent workflow skill bundle with shared-runtime install and agent-native invocation.",
+    "description": "Keystone installs one shared runtime, then exposes stable ks-* public names through agent-native integration layers."
+  },
+  "distribution": {
+    "defaultInstallModel": "shared-runtime",
+    "sharedRuntimeDir": "~/.keystone/runtime/Keystone",
+    "defaultEntrySkill": "ks-orchestrate",
+    "payload": {
+      "include": [
+        "README.md",
+        "FRAMEWORK.md",
+        "STATE.md",
+        "SYSTEM.md",
+        "LICENSE",
+        "package.json",
+        "keystone.manifest.json",
+        "keystone",
+        "keystone.cmd",
+        "bin",
+        "decision",
+        "docs",
+        "examples",
+        "execution",
+        "operation",
+        "orchestration",
+        "scripts",
+        "support",
+        "templates",
+        "keystone.policy.example.json"
+      ]
+    }
+  },
+  "agentFacing": {
+    "primaryEntrySkills": [
+      "ks-help",
+      "ks-orchestrate",
+      "ks-handoff"
+    ],
+    "highFrequencySkills": [
+      "ks-help",
+      "ks-brief",
+      "ks-bug-triage",
+      "ks-pr-prep",
+      "ks-docs-writer"
+    ],
+    "closeoutSkills": [
+      "ks-review",
+      "ks-pr-prep",
+      "ks-ship",
+      "ks-release",
+      "ks-docs-writer",
+      "ks-knowledge"
+    ],
+    "recommendedByIntent": [
+      {
+        "intent": "unknown-start",
+        "skill": "ks-help",
+        "contract": "recommend-only"
+      },
+      {
+        "intent": "formal-routing",
+        "skill": "ks-orchestrate",
+        "contract": "formal-router"
+      },
+      {
+        "intent": "session-switch",
+        "skill": "ks-handoff",
+        "contract": "session-router"
+      },
+      {
+        "intent": "compress-context",
+        "skill": "ks-brief",
+        "contract": "pre-routing-sidecar"
+      },
+      {
+        "intent": "bug-classification",
+        "skill": "ks-bug-triage",
+        "contract": "pre-routing-sidecar"
+      },
+      {
+        "intent": "pr-closeout-context",
+        "skill": "ks-pr-prep",
+        "contract": "closeout-sidecar"
+      },
+      {
+        "intent": "stable-doc-draft",
+        "skill": "ks-docs-writer",
+        "contract": "closeout-sidecar"
+      }
+    ],
+    "menuOrder": {
+      "primaryEntry": [
+        "ks-help",
+        "ks-orchestrate",
+        "ks-handoff"
+      ],
+      "highFrequency": [
+        "ks-help",
+        "ks-brief",
+        "ks-bug-triage",
+        "ks-pr-prep",
+        "ks-docs-writer"
+      ],
+      "mainline": [
+        "ks-orchestrate",
+        "ks-roundtable",
+        "ks-writing-plan",
+        "ks-test-first",
+        "ks-implement",
+        "ks-verify",
+        "ks-review",
+        "ks-qa",
+        "ks-ship",
+        "ks-release",
+        "ks-knowledge"
+      ],
+      "incident": [
+        "ks-help",
+        "ks-bug-triage",
+        "ks-diagnose",
+        "ks-ship"
+      ],
+      "closeout": [
+        "ks-review",
+        "ks-pr-prep",
+        "ks-ship",
+        "ks-release",
+        "ks-docs-writer",
+        "ks-knowledge"
+      ]
+    },
+    "presentationDefaults": {
+      "claude": {
+        "preferredInvocationStyle": "slash-command",
+        "highlightSections": [
+          "primaryEntry",
+          "highFrequency",
+          "closeout"
+        ]
+      },
+      "codex": {
+        "preferredInvocationStyle": "slash-command",
+        "highlightSections": [
+          "primaryEntry",
+          "highFrequency",
+          "mainline"
+        ]
+      },
+      "gemini": {
+        "preferredInvocationStyle": "slash-command",
+        "highlightSections": [
+          "primaryEntry",
+          "highFrequency",
+          "mainline"
+        ]
+      }
+    }
+  },
+  "agents": {
+    "claude": {
+      "markerDir": ".claude",
+      "skillDir": ".claude/skills/Keystone",
+      "defaultInstallTarget": "~/.claude/skills/Keystone",
+      "mountRuntime": true,
+      "commandDir": ".claude/commands",
+      "slashAliases": true,
+      "invocation": "Use /ks-help when you do not know where to start, or /ks-orchestrate when you want formal routing."
+    },
+    "codex": {
+      "markerDir": ".codex",
+      "skillDir": ".codex/skills/Keystone",
+      "mountRuntime": false,
+      "slashAliases": false,
+      "invocation": "Restart Codex, then start with /ks-help or /ks-orchestrate. Public ks-* skills are installed under ~/.agents/skills/."
+    },
+    "gemini": {
+      "markerDir": ".gemini",
+      "skillDir": ".gemini/skills/Keystone",
+      "mountRuntime": false,
+      "slashAliases": false,
+      "invocation": "Restart Gemini, then start with /ks-help or /ks-orchestrate. Public ks-* skills are installed under ~/.agents/skills/."
+    }
+  },
+  "skills": [
+    {
+      "name": "ks-help",
+      "alias": "ks-help",
+      "entry": "support/help/SKILL.md",
+      "summary": "Keystone first-run entry that recommends the right starting skill for the current situation.",
+      "entry_class": "primary-entry",
+      "class_priority": 10
+    },
+    {
+      "name": "ks-orchestrate",
+      "alias": "ks-orchestrate",
+      "entry": "orchestration/orchestrate/SKILL.md",
+      "summary": "Determine the correct Keystone entry mode and route the request to the next skill.",
+      "entry_class": "primary-entry",
+      "class_priority": 20
+    },
+    {
+      "name": "ks-handoff",
+      "alias": "ks-handoff",
+      "entry": "orchestration/handoff/SKILL.md",
+      "summary": "Create, restore, and list Keystone handoff packages.",
+      "entry_class": "primary-entry",
+      "class_priority": 30
+    },
+    {
+      "name": "ks-roundtable",
+      "alias": "ks-roundtable",
+      "entry": "decision/roundtable/SKILL.md",
+      "summary": "Converge direction through brainstorm, align, or challenge mode.",
+      "entry_class": "mainline",
+      "class_priority": 20
+    },
+    {
+      "name": "ks-brief",
+      "alias": "ks-brief",
+      "entry": "decision/brief/SKILL.md",
+      "summary": "Compress messy input into a one-page brief, then route to roundtable or writing-plan.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 20
+    },
+    {
+      "name": "ks-writing-plan",
+      "alias": "ks-writing-plan",
+      "entry": "decision/writing-plan/SKILL.md",
+      "summary": "Turn an approved direction into one executable current block.",
+      "entry_class": "mainline",
+      "class_priority": 30
+    },
+    {
+      "name": "ks-review",
+      "alias": "ks-review",
+      "entry": "decision/review/SKILL.md",
+      "summary": "Use verify evidence to make the formal quality-gate decision.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 10
+    },
+    {
+      "name": "ks-test-first",
+      "alias": "ks-test-first",
+      "entry": "execution/test-first/SKILL.md",
+      "summary": "Lock behavior first, then move into implementation.",
+      "entry_class": "mainline",
+      "class_priority": 40
+    },
+    {
+      "name": "ks-implement",
+      "alias": "ks-implement",
+      "entry": "execution/implement/SKILL.md",
+      "summary": "Complete the current block inside an explicit scope boundary.",
+      "entry_class": "mainline",
+      "class_priority": 50
+    },
+    {
+      "name": "ks-verify",
+      "alias": "ks-verify",
+      "entry": "execution/verify/SKILL.md",
+      "summary": "Collect fresh evidence and verify the implementation against the current done criteria.",
+      "entry_class": "mainline",
+      "class_priority": 60
+    },
+    {
+      "name": "ks-diagnose",
+      "alias": "ks-diagnose",
+      "entry": "execution/diagnose/SKILL.md",
+      "summary": "Investigate abnormal behavior before deciding whether to fix or roll back.",
+      "entry_class": "mainline",
+      "class_priority": 70
+    },
+    {
+      "name": "ks-bug-triage",
+      "alias": "ks-bug-triage",
+      "entry": "execution/bug-triage/SKILL.md",
+      "summary": "Classify the issue as spec gap, implementation bug, or rollback candidate.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 30
+    },
+    {
+      "name": "ks-qa",
+      "alias": "ks-qa",
+      "entry": "operation/qa/SKILL.md",
+      "summary": "Run real browser or runtime validation when review requires it.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 20
+    },
+    {
+      "name": "ks-pr-prep",
+      "alias": "ks-pr-prep",
+      "entry": "operation/pr-prep/SKILL.md",
+      "summary": "Turn post-review changes into ready-to-use PR and merge context.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 40
+    },
+    {
+      "name": "ks-ship",
+      "alias": "ks-ship",
+      "entry": "operation/ship/SKILL.md",
+      "summary": "Close out delivery with final checks and release guidance.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 30
+    },
+    {
+      "name": "ks-release",
+      "alias": "ks-release",
+      "entry": "operation/release/SKILL.md",
+      "summary": "Make an honest release decision with risks and disclosure.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 40
+    },
+    {
+      "name": "ks-docs-writer",
+      "alias": "ks-docs-writer",
+      "entry": "support/docs-writer/SKILL.md",
+      "summary": "Turn completed implementation, verification, or release results into stable docs.",
+      "entry_class": "high-frequency-sidecar",
+      "class_priority": 50
+    },
+    {
+      "name": "ks-knowledge",
+      "alias": "ks-knowledge",
+      "entry": "support/knowledge/SKILL.md",
+      "summary": "Retrieve and compound reusable knowledge.",
+      "entry_class": "closeout-mainline",
+      "class_priority": 50
+    }
+  ]
+}

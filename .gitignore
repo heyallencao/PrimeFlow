@@ -1,8 +1,8 @@
 # Dependencies
 node_modules/
 
-# PrimeFlow
-.primeflow/
+# Keystone
+.keystone/
 
 # Temp directories
 tmp/

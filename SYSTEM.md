@@ -1,18 +1,18 @@
-# PrimeFlow System Architecture
+# Keystone System Architecture
 
-> If this is your first contact with PrimeFlow, read [README.md](./README.md) and [docs/walkthrough.md](./docs/walkthrough.md) first. This file is for readers who want the workflow layers, state flow, and routing rules.
+> If this is your first contact with Keystone, read [README.md](./README.md) and [docs/walkthrough.md](./docs/walkthrough.md) first. This file is for readers who want the workflow layers, state flow, and routing rules.
 
 ## System Positioning
 
-PrimeFlow is a workflow skill framework for real delivery work. It keeps a clear mainline, allows flexible entry, and holds a high closeout standard at verification, review, QA, ship, and release.
+Keystone is a workflow skill framework for real delivery work. It keeps a clear mainline, allows flexible entry, and holds a high closeout standard at verification, review, QA, ship, and release.
 
 The external product model has three layers:
 
-- skill package: the PrimeFlow skills themselves
+- skill package: the Keystone skills themselves
 - distribution layer: installation, host integration, and aliases
-- companion tooling: the `primeflow` CLI
+- companion tooling: the `keystone` CLI
 
-PrimeFlow is not trying to stitch unrelated systems together. It is trying to define one coherent operating model:
+Keystone is not trying to stitch unrelated systems together. It is trying to define one coherent operating model:
 
 - it cares about real delivery loops without becoming infrastructure-heavy
 - it cares about knowledge compounding without turning into documentation overhead
@@ -156,13 +156,13 @@ Each path should confirm:
 |---|---|---|
 | browser testing | Playwright-based automation | manual validation |
 | browser automation | project-local automation | manual confirmation |
-| pre-ship checklist | PrimeFlow checklist | simplified checklist |
-| knowledge | PrimeFlow retrieval/update loop | text-only fallback |
-| persona review | PrimeFlow multi-persona review | single-persona fallback |
+| pre-ship checklist | Keystone checklist | simplified checklist |
+| knowledge | Keystone retrieval/update loop | text-only fallback |
+| persona review | Keystone multi-persona review | single-persona fallback |
 
 ## Handoff Design
 
-PrimeFlow handoff is not just a note for the next session. It is a minimal recoverable package:
+Keystone handoff is not just a note for the next session. It is a minimal recoverable package:
 
 - `handoff.md`: the human-readable 8-slot package
 - `snapshot.json`: structured state for routing and recovery
@@ -186,7 +186,7 @@ Responsibility split:
 
 ## Design Intent
 
-PrimeFlow intentionally:
+Keystone intentionally:
 
 - keeps a clear mainline without forcing every task to start at the same first step
 - defaults to `test-first` while preserving bounded low-risk exceptions

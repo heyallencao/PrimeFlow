@@ -1,5 +1,5 @@
 ---
-name: pf-review
+name: ks-review
 description: "Formal quality gate with multi-persona review, confidence thresholds, and QA routing based on fresh verification evidence."
 layer: decision
 owner: review
@@ -32,9 +32,9 @@ Turns verification evidence into a formal quality decision. Verify collects evid
 ### Step 1: Confirm prerequisites
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-_VERIFY_RESULT=$($_PF_CLI state get verify_result 2>/dev/null | tr -d '"')
-_PLAN_DOC=$($_PF_CLI state get artifacts.plan_document 2>/dev/null | tr -d '"')
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+_VERIFY_RESULT=$($_KS_CLI state get verify_result 2>/dev/null | tr -d '"')
+_PLAN_DOC=$($_KS_CLI state get artifacts.plan_document 2>/dev/null | tr -d '"')
 
 echo "Verify result: $_VERIFY_RESULT"
 echo "Plan document: $_PLAN_DOC"
@@ -217,7 +217,7 @@ Step 8d: present P3 findings
 | Uncertain | `true` (safer default) |
 
 ```bash
-$_PF_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
+$_KS_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
 ```
 
 - qa_required must be explicit before review exits. null is not valid.
@@ -276,11 +276,11 @@ $_PF_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
 ```bash
 _REVIEW_RESULT="${REVIEW_RESULT:?pass|pass_with_risks|blocked}"
 _QA_REQUIRED="${QA_REQUIRED:?true|false}"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 
-$_PF_CLI state set current_stage "review" >/dev/null
-$_PF_CLI state set review_result "$_REVIEW_RESULT" >/dev/null
-$_PF_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
+$_KS_CLI state set current_stage "review" >/dev/null
+$_KS_CLI state set review_result "$_REVIEW_RESULT" >/dev/null
+$_KS_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
 
 case "$_REVIEW_RESULT" in
   pass)
@@ -297,16 +297,16 @@ case "$_REVIEW_RESULT" in
     ;;
 esac
 
-$_PF_CLI state set exit_code "ok" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
+$_KS_CLI state set exit_code "ok" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```
 
 ### Step 13: Emit telemetry
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"review\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"review-$_REVIEW_RESULT\",\"confidence\":0.9,\"review_result\":\"$_REVIEW_RESULT\",\"qa_required\":$_QA_REQUIRED,\"findings_p0\":${P0_COUNT:-0},\"findings_p1\":${P1_COUNT:-0},\"specialists_run\":${SPECIALIST_COUNT:-4}}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"review\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"review-$_REVIEW_RESULT\",\"confidence\":0.9,\"review_result\":\"$_REVIEW_RESULT\",\"qa_required\":$_QA_REQUIRED,\"findings_p0\":${P0_COUNT:-0},\"findings_p1\":${P1_COUNT:-0},\"specialists_run\":${SPECIALIST_COUNT:-4}}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ---

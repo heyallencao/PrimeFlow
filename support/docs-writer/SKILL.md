@@ -1,5 +1,5 @@
 ---
-name: pf-docs-writer
+name: ks-docs-writer
 description: "Fact-based documentation writer. Compress completed implementation, verification, or release results into stable docs such as changelogs, ADRs, and migration notes."
 layer: support
 owner: docs-writer
@@ -155,16 +155,16 @@ When a draft or source artifact claims validation that did not actually run:
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set last_decision "docs-draft-ready" >/dev/null 2>&1 || true
-$_PF_CLI state set artifacts.docs_writer_status "ready" >/dev/null 2>&1 || true
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set last_decision "docs-draft-ready" >/dev/null 2>&1 || true
+$_KS_CLI state set artifacts.docs_writer_status "ready" >/dev/null 2>&1 || true
 ```
 
 ## Telemetry
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"docs-writer\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"docs-draft-ready\",\"doc_type\":\"${DOC_TYPE:-maintainer-note}\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"docs-writer\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"docs-draft-ready\",\"doc_type\":\"${DOC_TYPE:-maintainer-note}\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

@@ -1,9 +1,9 @@
-# PrimeFlow State Management
+# Keystone State Management
 
 ## State File Location
 
 ```text
-.primeflow/state.json
+.keystone/state.json
 ```
 
 ## State Shape
@@ -23,11 +23,11 @@ For full stage flow and legal transitions, see [SYSTEM.md](./SYSTEM.md).
   "risk_level": "low|medium|high",
   "qa_required": false,
   "artifacts": {
-    "plan_document": "docs/primeflow/plans/[slug].md",
+    "plan_document": "docs/keystone/plans/[slug].md",
     "plan_type": "full-plan|delta-plan|execution-card",
     "next_skill_hint": "test-first|implement",
-    "test_contract": "docs/primeflow/tests/[slug].md",
-    "review_report": "docs/primeflow/reviews/[slug].md",
+    "test_contract": "docs/keystone/tests/[slug].md",
+    "review_report": "docs/keystone/reviews/[slug].md",
     "roundtable_mode": "brainstorm|align|challenge",
     "knowledge_doc": "docs/solutions/[category]/[slug].md"
   },
@@ -80,12 +80,12 @@ These fields track iterative loops and enforce per-skill limits:
 
 | Field | Type | Default | Used by | Limit | Action on limit |
 |---|---|---|---|---|---|
-| `implement_scope_expansions` | int | 0 | `pf-implement` | 3 | pause and ask user |
-| `verify_failure_count` | int | 0 | `pf-verify` | 2 | route to diagnose |
-| `qa_fix_count` | int | 0 | `pf-qa` | 50 (hard cap) | stop and ask user |
-| `qa_wtf_likelihood` | float | 0.0 | `pf-qa` | 0.20 (20%) | stop and ask user |
-| `roundtable_low_info_answers` | int | 0 | `pf-roundtable` | 2 | force conclusion with risk disclosure |
-| `writing_plan_revisions` | int | 0 | `pf-writing-plan` | 3 | escalate to roundtable |
+| `implement_scope_expansions` | int | 0 | `ks-implement` | 3 | pause and ask user |
+| `verify_failure_count` | int | 0 | `ks-verify` | 2 | route to diagnose |
+| `qa_fix_count` | int | 0 | `ks-qa` | 50 (hard cap) | stop and ask user |
+| `qa_wtf_likelihood` | float | 0.0 | `ks-qa` | 0.20 (20%) | stop and ask user |
+| `roundtable_low_info_answers` | int | 0 | `ks-roundtable` | 2 | force conclusion with risk disclosure |
+| `writing_plan_revisions` | int | 0 | `ks-writing-plan` | 3 | escalate to roundtable |
 
 Rules:
 - counters reset to 0 when the skill completes successfully or when routing moves to a different stage
@@ -96,14 +96,14 @@ Rules:
 
 | Field | Type | Default | Used by | Purpose |
 |---|---|---|---|---|
-| `first_run_complete` | bool | false | `pf-help` | whether onboarding ritual has finished |
-| `telemetry_consent` | string/null | null | `pf-help`, telemetry | community/anonymous/off |
-| `proactive_consent` | bool/null | null | `pf-help` | whether agent may proactively suggest skills |
+| `first_run_complete` | bool | false | `ks-help` | whether onboarding ritual has finished |
+| `telemetry_consent` | string/null | null | `ks-help`, telemetry | community/anonymous/off |
+| `proactive_consent` | bool/null | null | `ks-help` | whether agent may proactively suggest skills |
 
 Rules:
 - `telemetry_consent` uses: `community` (shared anonymized), `anonymous` (local only), `off` (no telemetry), `null` (not yet asked)
 - `proactive_consent` uses: `true` (agent may suggest), `false` (no proactive suggestions), `null` (not yet asked)
-- these fields are set once by `pf-help` and should not change after initial setup
+- these fields are set once by `ks-help` and should not change after initial setup
 
 ### `current_block`
 
@@ -116,7 +116,7 @@ Rules:
 ## Directory Structure
 
 ```text
-.primeflow/
+.keystone/
 ├── state.json
 ├── developer-profile.json
 ├── telemetry/
@@ -135,7 +135,7 @@ Rules:
 
 When work must pause, ownership changes, or context is at risk of being lost, use `handoff out`.
 
-PrimeFlow handoff uses two artifacts:
+Keystone handoff uses two artifacts:
 
 - `handoff.md`: human-readable package for the next session
 - `snapshot.json`: structured recovery state for `orchestrate`
@@ -157,7 +157,7 @@ Recovery-point rules:
 ### Freeze
 
 ```bash
-_HANDOFF_DOC=$(./primeflow handoff create "${TOPIC:-primeflow-handoff}")
+_HANDOFF_DOC=$(./keystone handoff create "${TOPIC:-keystone-handoff}")
 _HANDOFF_DIR=$(dirname "$_HANDOFF_DOC")
 _HANDOFF_ID=$(basename "$_HANDOFF_DIR")
 ```
@@ -167,9 +167,9 @@ _HANDOFF_ID=$(basename "$_HANDOFF_DIR")
 ```bash
 _HANDOFF_TARGET="${1:-latest}"
 if [ "$_HANDOFF_TARGET" = "latest" ]; then
-  _HANDOFF_DOC=$(./primeflow handoff latest)
+  _HANDOFF_DOC=$(./keystone handoff latest)
 else
-  _HANDOFF_DOC=$(./primeflow handoff resolve "$_HANDOFF_TARGET")
+  _HANDOFF_DOC=$(./keystone handoff resolve "$_HANDOFF_TARGET")
 fi
 
 _HANDOFF_DIR=$(dirname "$_HANDOFF_DOC")

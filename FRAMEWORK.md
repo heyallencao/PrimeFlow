@@ -1,12 +1,12 @@
-# PrimeFlow Framework
+# Keystone Framework
 
-All PrimeFlow skills follow this framework so the workflow remains consistent, composable, and usable in real team collaboration.
+All Keystone skills follow this framework so the workflow remains consistent, composable, and usable in real team collaboration.
 
 ## 0. Core Principles
 
 ### Flexible Entry
 
-Tasks may enter from any reasonable stage. PrimeFlow does not require every request to begin at `roundtable`.
+Tasks may enter from any reasonable stage. Keystone does not require every request to begin at `roundtable`.
 
 ### Declared Context
 
@@ -22,19 +22,19 @@ Verification, review, release, and knowledge closeout must remain strict and evi
 
 ### Runtime Note
 
-PrimeFlow's main product is the installed skill package inside the host environment. The CLI is companion tooling for installation, state, handoff, and scaffolding.
+Keystone's main product is the installed skill package inside the host environment. The CLI is companion tooling for installation, state, handoff, and scaffolding.
 
 The repository-local CLI entry is:
 
 ```text
-./primeflow ...
+./keystone ...
 ```
 
 Implications:
 
 - cross-host skill semantics are the first priority
-- the CLI matters, but it is not the only carrier of the PrimeFlow contract
-- first-run users should not need to understand shell or `jq` fragments before using PrimeFlow
+- the CLI matters, but it is not the only carrier of the Keystone contract
+- first-run users should not need to understand shell or `jq` fragments before using Keystone
 - shell snippets in this document and in skills remain compatibility examples, not the preferred first-run entry
 - the preferred path is to use host-installed skills first and the CLI second
 
@@ -114,7 +114,7 @@ When the task does not enter as `from-scratch`, the skill should usually also ex
 
 ## 3. Skill Preamble
 
-Every skill should begin by checking the current state. Prefer the PrimeFlow CLI instead of exposing raw `jq` as the default entry:
+Every skill should begin by checking the current state. Prefer the Keystone CLI instead of exposing raw `jq` as the default entry:
 
 ```bash
 _CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
@@ -123,11 +123,11 @@ echo "Branch: $_CURRENT_BRANCH"
 _PENDING=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 echo "Pending changes: $_PENDING"
 
-if [ -f ".primeflow/state.json" ]; then
-  _CURRENT_STAGE=$(./primeflow state get current_stage 2>/dev/null | tr -d '"')
-  _LAST_SKILL=$(./primeflow state get last_skill 2>/dev/null | tr -d '"')
-  _ENTRY_MODE=$(./primeflow state get entry_mode 2>/dev/null | tr -d '"')
-  _RISK_LEVEL=$(./primeflow state get risk_level 2>/dev/null | tr -d '"')
+if [ -f ".keystone/state.json" ]; then
+  _CURRENT_STAGE=$(./keystone state get current_stage 2>/dev/null | tr -d '"')
+  _LAST_SKILL=$(./keystone state get last_skill 2>/dev/null | tr -d '"')
+  _ENTRY_MODE=$(./keystone state get entry_mode 2>/dev/null | tr -d '"')
+  _RISK_LEVEL=$(./keystone state get risk_level 2>/dev/null | tr -d '"')
   echo "Current stage: $_CURRENT_STAGE"
   echo "Last skill: $_LAST_SKILL"
   echo "Entry mode: $_ENTRY_MODE"
@@ -137,9 +137,9 @@ fi
 
 Compatibility notes:
 
-- inside the PrimeFlow repo, prefer `./primeflow`
-- if you need the explicit Node path, use `node bin/primeflow.mjs`
-- if PrimeFlow is vendored under a `PrimeFlow/` directory, use `./PrimeFlow/primeflow`
+- inside the Keystone repo, prefer `./keystone`
+- if you need the explicit Node path, use `node bin/keystone.mjs`
+- if Keystone is vendored under a `Keystone/` directory, use `./Keystone/keystone`
 - legacy shell and `jq` snippets remain acceptable migration examples
 
 ### Entry Contract Triggering
@@ -150,7 +150,7 @@ Compatibility notes:
 
 ### Risk Level Ownership
 
-`risk_level` is assigned by default in `orchestrate` and written into `.primeflow/state.json`.
+`risk_level` is assigned by default in `orchestrate` and written into `.keystone/state.json`.
 
 Later skills may adjust it, but they must:
 
@@ -210,7 +210,7 @@ The state file, field definitions, and handoff protocol are defined in [STATE.md
 
 ## 6. Layer Contract
 
-PrimeFlow is built around five layers:
+Keystone is built around five layers:
 
 - `orchestration`: route and recover
 - `decision`: converge, compress, formalize, and gate
@@ -222,7 +222,7 @@ The workflow should feel flexible at entry and strict at closeout.
 
 ## 7. Design Intent
 
-PrimeFlow intentionally:
+Keystone intentionally:
 
 - keeps a clear mainline without forcing all work to start at step one
 - defaults to `test-first`, while preserving bounded low-risk exceptions

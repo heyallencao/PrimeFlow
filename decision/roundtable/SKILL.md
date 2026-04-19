@@ -1,5 +1,5 @@
 ---
-name: pf-roundtable
+name: ks-roundtable
 description: "Direction convergence skill. Use brainstorm, align, or challenge mode to turn messy questions or existing proposals into a clear directional decision."
 layer: decision
 owner: roundtable
@@ -249,10 +249,10 @@ When the decision topic is answered but the scope boundary is still vague (e.g.,
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set current_stage "roundtable" >/dev/null
-$_PF_CLI state set last_decision "$_DECISION" >/dev/null
-$_PF_CLI state set artifacts.roundtable_mode "$_ROUNDTABLE_MODE" >/dev/null
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set current_stage "roundtable" >/dev/null
+$_KS_CLI state set last_decision "$_DECISION" >/dev/null
+$_KS_CLI state set artifacts.roundtable_mode "$_ROUNDTABLE_MODE" >/dev/null
 
 case "$_DECISION" in
   roundtable-aligned)
@@ -271,15 +271,15 @@ case "$_DECISION" in
     _EXIT_REASON="Directional disagreement cannot be resolved safely"
     ;;
 esac
-$_PF_CLI state set exit_code "$_EXIT_CODE" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
+$_KS_CLI state set exit_code "$_EXIT_CODE" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"roundtable\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_DECISION\",\"confidence\":0.9,\"mode\":\"$_ROUNDTABLE_MODE\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"roundtable\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_DECISION\",\"confidence\":0.9,\"mode\":\"$_ROUNDTABLE_MODE\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

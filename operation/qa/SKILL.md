@@ -1,5 +1,5 @@
 ---
-name: pf-qa
+name: ks-qa
 description: "Conditional real-runtime QA. Enter only when review set qa_required=true. Use Playwright by default, and degrade to manual validation when automation is unavailable."
 layer: operation
 owner: qa
@@ -381,11 +381,11 @@ Runs only when fixes were applied. Generate regression test for each fix.
 ```bash
 _QA_RESULT="${QA_RESULT:?set QA_RESULT to pass|partial|fail}"
 _QA_DECISION="${QA_DECISION:?set QA_DECISION to qa-pass|qa-partial|qa-fail}"
-_PF_CLI="${PRIMEFLOW_CLI:-${HOME}/.primeflow/runtime/PrimeFlow/primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-${HOME}/.keystone/runtime/Keystone/keystone}"
 
-$_PF_CLI state set current_stage "qa" >/dev/null
-$_PF_CLI state set qa_result "$_QA_RESULT" >/dev/null
-$_PF_CLI state set last_decision "$_QA_DECISION" >/dev/null
+$_KS_CLI state set current_stage "qa" >/dev/null
+$_KS_CLI state set qa_result "$_QA_RESULT" >/dev/null
+$_KS_CLI state set last_decision "$_QA_DECISION" >/dev/null
 
 case "$_QA_RESULT" in
   pass|partial)
@@ -399,15 +399,15 @@ case "$_QA_RESULT" in
     _EXIT_REASON="Blocking runtime bug found"
     ;;
 esac
-$_PF_CLI state set exit_code "$_EXIT_CODE" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
+$_KS_CLI state set exit_code "$_EXIT_CODE" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"qa\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_QA_DECISION\",\"confidence\":0.9,\"qa_result\":\"$_QA_RESULT\",\"bugs_found\":${BUGS_FOUND:-0},\"fixes_applied\":${_FIX_COUNT:-0},\"wtf_likelihood\":${_WTF_LIKELIHOOD:-0},\"staging_reachable\":${_STAGING_REACHABLE:-false},\"playwright_available\":${_PLAYWRIGHT_AVAILABLE:-false}}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"qa\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_QA_DECISION\",\"confidence\":0.9,\"qa_result\":\"$_QA_RESULT\",\"bugs_found\":${BUGS_FOUND:-0},\"fixes_applied\":${_FIX_COUNT:-0},\"wtf_likelihood\":${_WTF_LIKELIHOOD:-0},\"staging_reachable\":${_STAGING_REACHABLE:-false},\"playwright_available\":${_PLAYWRIGHT_AVAILABLE:-false}}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

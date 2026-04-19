@@ -1,25 +1,25 @@
-# PrimeFlow Distribution Model
+# Keystone Distribution Model
 
 ## V2 Frozen Conclusion
 
-In V2, PrimeFlow should be treated as an installable skill product rather than a repo that users must manually study and assemble.
+In V2, Keystone should be treated as an installable skill product rather than a repo that users must manually study and assemble.
 
 The frozen public model is:
 
-1. users install PrimeFlow directly; if exactly one supported host is detected, PrimeFlow selects it automatically
-2. PrimeFlow installs the full runtime bundle into the shared runtime location and flattens the public `pf-*` skills into `.agents/skills/`
-3. only Claude mounts the support-bundle entry layer; Codex and Gemini consume the public `pf-*` skills directly
-4. users invoke PrimeFlow through their host-native `/pf-*` entry shape
+1. users install Keystone directly; if exactly one supported host is detected, Keystone selects it automatically
+2. Keystone installs the full runtime bundle into the shared runtime location and flattens the public `ks-*` skills into `.agents/skills/`
+3. only Claude mounts the support-bundle entry layer; Codex and Gemini consume the public `ks-*` skills directly
+4. users invoke Keystone through their host-native `/ks-*` entry shape
 
 Default shared runtime:
 
-- `~/.primeflow/runtime/PrimeFlow`
+- `~/.keystone/runtime/Keystone`
 
 Default host targets:
 
-- Claude: `~/.claude/skills/PrimeFlow`
-- Codex: `~/.agents/skills/pf-*`
-- Gemini: `~/.agents/skills/pf-*`
+- Claude: `~/.claude/skills/Keystone`
+- Codex: `~/.agents/skills/ks-*`
+- Gemini: `~/.agents/skills/ks-*`
 
 Claude command files are installed into:
 
@@ -27,7 +27,7 @@ Claude command files are installed into:
 
 ## Single Source Of Truth
 
-The single source of truth for distribution is `primeflow.manifest.json`.
+The single source of truth for distribution is `keystone.manifest.json`.
 
 It defines:
 
@@ -36,32 +36,32 @@ It defines:
 - supported hosts and their target locations
 - install payload
 - the full skill bundle list
-- Claude `/pf-*` aliases
+- Claude `/ks-*` aliases
 - host-facing invocation guidance
 
 These outputs must converge from the manifest:
 
-- `./primeflow install`
-- `./primeflow dist build`
+- `./keystone install`
+- `./keystone dist build`
 - Claude command files
 - README and installation docs
 
 ## Installation Unit
 
-PrimeFlow installs as a full bundle, not as loose fragment skills.
+Keystone installs as a full bundle, not as loose fragment skills.
 
-The V2 bundle includes the public PrimeFlow skill set, and installs both:
+The V2 bundle includes the public Keystone skill set, and installs both:
 
 - the shared runtime bundle
-- the flattened public `pf-*` skills
+- the flattened public `ks-*` skills
 
 ## Host Invocation Contract
 
-PrimeFlow standardizes:
+Keystone standardizes:
 
 - skill identity
 - public naming
-- `/pf-*` entry shape
+- `/ks-*` entry shape
 
 Default starting point:
 
@@ -69,9 +69,9 @@ Default starting point:
 
 Host usage:
 
-- Claude: `/pf-help`, `/pf-orchestrate`, `/pf-review`, `/pf-verify`, and other `/pf-*`
-- Codex: after restart, `/pf-help`, `/pf-orchestrate`, and other `/pf-*`
-- Gemini: after restart, `/pf-help`, `/pf-orchestrate`, and other `/pf-*`
+- Claude: `/ks-help`, `/ks-orchestrate`, `/ks-review`, `/ks-verify`, and other `/ks-*`
+- Codex: after restart, `/ks-help`, `/ks-orchestrate`, and other `/ks-*`
+- Gemini: after restart, `/ks-help`, `/ks-orchestrate`, and other `/ks-*`
 
 The public entry shape is shared. Menu rendering and completion still depend on host capability.
 
@@ -82,7 +82,7 @@ The current model freezes two install paths with different maturity:
 ### 1. `repo-install`
 
 ```bash
-./primeflow install
+./keystone install
 ```
 
 This is the default repository entry point. `--agent` may still override auto-detection.
@@ -90,8 +90,8 @@ This is the default repository entry point. `--agent` may still override auto-de
 ### 2. `release-install-stage`
 
 ```bash
-./primeflow dist build --output ./dist/release/PrimeFlow
-./primeflow install --source ./dist/release/PrimeFlow --agent codex
+./keystone dist build --output ./dist/release/Keystone
+./keystone install --source ./dist/release/Keystone --agent codex
 ```
 
 This validates staged-payload installation, but it is not yet an npm or marketplace release path.
@@ -105,7 +105,7 @@ Explicitly out of scope for this V2 freeze:
 - host marketplace integrations
 - general release-archive distribution
 
-Repository visibility and package visibility are separate decisions. PrimeFlow can be open source while `package.json` remains `private`. In the current model, that `private` flag is intentional: it prevents accidental npm publication while the supported release paths are still `repo-install` and `release-install-stage` rather than `npm publish`.
+Repository visibility and package visibility are separate decisions. Keystone can be open source while `package.json` remains `private`. In the current model, that `private` flag is intentional: it prevents accidental npm publication while the supported release paths are still `repo-install` and `release-install-stage` rather than `npm publish`.
 
 ## Behavioral Requirements
 
@@ -116,7 +116,7 @@ Under V2, CLI and docs must both satisfy:
 - multiple detected hosts -> require an explicit choice
 - install locations match the manifest
 - install contents match the manifest bundle
-- Claude gets `/pf-*` command files; Codex and Gemini get public `pf-*` skill directories
+- Claude gets `/ks-*` command files; Codex and Gemini get public `ks-*` skill directories
 - `dist build` clearly marks the output as a staged payload
 - `install --source` clearly consumes a staged payload instead of blurring repo-install and staged-install into one concept
-- before public release, run at least one real `/pf-help` check in the current Claude, Codex, and Gemini versions
+- before public release, run at least one real `/ks-help` check in the current Claude, Codex, and Gemini versions

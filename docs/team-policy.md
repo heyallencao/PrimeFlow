@@ -1,10 +1,10 @@
-# PrimeFlow Team Policy
+# Keystone Team Policy
 
-This document explains how a team-level policy layer can sit on top of PrimeFlow without rewriting the core workflow contract.
+This document explains how a team-level policy layer can sit on top of Keystone without rewriting the core workflow contract.
 
 ## Design Goal
 
-The team policy layer exists to let teams standardize a few high-value operational rules while keeping the core PrimeFlow skills stable.
+The team policy layer exists to let teams standardize a few high-value operational rules while keeping the core Keystone skills stable.
 
 It should help teams answer questions such as:
 
@@ -15,7 +15,7 @@ It should help teams answer questions such as:
 
 ## State Boundary
 
-Team policy may influence routing defaults or required disclosures, but it should not redefine core skill identity or erase PrimeFlow's explicit exit semantics.
+Team policy may influence routing defaults or required disclosures, but it should not redefine core skill identity or erase Keystone's explicit exit semantics.
 
 ## What Policy May Override
 
@@ -86,7 +86,7 @@ handoff:
 
 When a policy exists:
 
-- treat it as a constrained overlay on top of PrimeFlow
+- treat it as a constrained overlay on top of Keystone
 - keep the skill contract stable
 - favor explicit disclosure over silent auto-relaxation
 
@@ -122,4 +122,4 @@ The first useful team policy layer is complete when:
 - teams can express QA defaults
 - teams can express review strictness
 - teams can express release disclosure requirements
-- the overlay does not distort the core PrimeFlow workflow
+- the overlay does not distort the core Keystone workflow

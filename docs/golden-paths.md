@@ -1,4 +1,4 @@
-# PrimeFlow Golden Paths
+# Keystone Golden Paths
 
 This is not the full protocol manual. It is the fast reference for common situations: which skill chain to use, where to stop, and when to route backward.
 

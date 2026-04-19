@@ -1,14 +1,14 @@
-# PrimeFlow Examples
+# Keystone Examples
 
 These examples have one goal:
 
-> give you copyable PrimeFlow prompts instead of only describing the rules.
+> give you copyable Keystone prompts instead of only describing the rules.
 
 Default assumptions:
 
-- you already ran `./primeflow install`
+- you already ran `./keystone install`
 - you are back inside your host agent
-- the next step is to call the installed PrimeFlow skills directly
+- the next step is to call the installed Keystone skills directly
 
 Each example covers the same high-frequency situations:
 
@@ -20,16 +20,16 @@ Each example covers the same high-frequency situations:
 
 ## Host Guides
 
-- [claude.md](./claude.md) - PrimeFlow on Claude
-- [codex.md](./codex.md) - PrimeFlow on Codex
-- [gemini.md](./gemini.md) - PrimeFlow on Gemini
+- [claude.md](./claude.md) - Keystone on Claude
+- [codex.md](./codex.md) - Keystone on Codex
+- [gemini.md](./gemini.md) - Keystone on Gemini
 
 ## Usage Notes
 
 Pick your host, then copy and paste the first sentence that matches your situation.
 
-If you are implementing host support instead of using PrimeFlow normally:
+If you are implementing host support instead of using Keystone normally:
 
-- start with `primeflow.manifest.json`
+- start with `keystone.manifest.json`
 - use `docs/decision-matrix.md` for routing semantics
 - use the relevant `SKILL.md` file for skill boundaries

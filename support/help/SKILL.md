@@ -1,6 +1,6 @@
 ---
-name: pf-help
-description: "PrimeFlow first-run entry. Use it for onboarding, scenario triage, and choosing the next skill without replacing orchestrate."
+name: ks-help
+description: "Keystone first-run entry. Use it for onboarding, scenario triage, and choosing the next skill without replacing orchestrate."
 layer: support
 owner: help
 inputs:
@@ -22,7 +22,7 @@ entry_modes:
 
 # Help
 
-PrimeFlow's entry point. One job: give the user one copy-ready next sentence.
+Keystone's entry point. One job: give the user one copy-ready next sentence.
 
 **Responsible for**: recommending one skill, giving a copy-ready prompt.
 **Not responsible for**: deciding entry_mode, mutating workflow state, replacing orchestrate.
@@ -36,20 +36,20 @@ PrimeFlow's entry point. One job: give the user one copy-ready next sentence.
 Check if this is the user's first time. `state init` already created flag files and set defaults. This step only prints the intro message once.
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-_FIRST_RUN=$($_PF_CLI state get first_run_complete 2>/dev/null | tr -d '"')
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+_FIRST_RUN=$($_KS_CLI state get first_run_complete 2>/dev/null | tr -d '"')
 
 if [ "$_FIRST_RUN" != "true" ]; then
-  $_PF_CLI state set first_run_complete true >/dev/null 2>&1 || true
+  $_KS_CLI state set first_run_complete true >/dev/null 2>&1 || true
   echo "=== First Run ==="
-  echo "PrimeFlow: flexible entry, honest exit."
+  echo "Keystone: flexible entry, honest exit."
   echo "You can finish your first real task in about 5 minutes."
   echo "Quickstart: docs/quickstart.md"
   echo ""
   echo "Telemetry is off by default. Change with:"
-  echo "  ./primeflow state set telemetry_consent community"
-  echo "  ./primeflow state set telemetry_consent anonymous"
-  echo "  ./primeflow state set telemetry_consent off"
+  echo "  ./keystone state set telemetry_consent community"
+  echo "  ./keystone state set telemetry_consent anonymous"
+  echo "  ./keystone state set telemetry_consent off"
   echo ""
 fi
 ```
@@ -76,19 +76,19 @@ Decision rule: recommend exactly one primary entry. A list of three "maybe" opti
 
 | Current situation | Recommended skill | Copy-ready prompt |
 |---|---|---|
-| Completely unsure where to begin | `orchestrate` | `/pf-orchestrate Route this task from the correct entry mode and push it to the smallest safe next step.` |
-| Direction is still messy and needs convergence | `roundtable` | `/pf-roundtable The direction is still unclear. Help me converge what to do and what not to do before formal planning.` |
-| Direction is clear, needs a current block | `writing-plan` | `/pf-writing-plan The direction is decided. Turn it into one executable block with done criteria.` |
-| Behavior must be locked before implementation | `test-first` | `/pf-test-first Define failing checks that lock the behavior boundary before implementation begins.` |
-| The block is clear, work should begin now | `implement` | `/pf-implement Execute the current block without expanding scope.` |
-| Code exists, needs fresh evidence | `verify` | `/pf-verify Collect fresh evidence for the current change before claiming it is ready for review.` |
-| Something is broken, cause is unclear | `diagnose` | `/pf-diagnose Investigate the root cause before attempting a fix.` |
-| A bug showed up, type is unclear | `bug-triage` | `/pf-bug-triage Classify this failure as spec gap, implementation bug, or rollback candidate.` |
-| Formal quality gate is needed | `review` | `/pf-review Run the formal quality gate using fresh verification evidence.` |
-| Runtime validation is needed | `qa` | `/pf-qa Run real browser or runtime validation for critical user paths.` |
-| Delivery or release closeout | `ship` / `release` | `/pf-ship Close out delivery with final checks.` |
-| PR closeout context is needed | `pr-prep` | `/pf-pr-prep Package the change into reviewer-ready PR context.` |
-| Need to pause or resume later | `handoff` | `/pf-handoff Freeze the current context for later recovery.` |
+| Completely unsure where to begin | `orchestrate` | `/ks-orchestrate Route this task from the correct entry mode and push it to the smallest safe next step.` |
+| Direction is still messy and needs convergence | `roundtable` | `/ks-roundtable The direction is still unclear. Help me converge what to do and what not to do before formal planning.` |
+| Direction is clear, needs a current block | `writing-plan` | `/ks-writing-plan The direction is decided. Turn it into one executable block with done criteria.` |
+| Behavior must be locked before implementation | `test-first` | `/ks-test-first Define failing checks that lock the behavior boundary before implementation begins.` |
+| The block is clear, work should begin now | `implement` | `/ks-implement Execute the current block without expanding scope.` |
+| Code exists, needs fresh evidence | `verify` | `/ks-verify Collect fresh evidence for the current change before claiming it is ready for review.` |
+| Something is broken, cause is unclear | `diagnose` | `/ks-diagnose Investigate the root cause before attempting a fix.` |
+| A bug showed up, type is unclear | `bug-triage` | `/ks-bug-triage Classify this failure as spec gap, implementation bug, or rollback candidate.` |
+| Formal quality gate is needed | `review` | `/ks-review Run the formal quality gate using fresh verification evidence.` |
+| Runtime validation is needed | `qa` | `/ks-qa Run real browser or runtime validation for critical user paths.` |
+| Delivery or release closeout | `ship` / `release` | `/ks-ship Close out delivery with final checks.` |
+| PR closeout context is needed | `pr-prep` | `/ks-pr-prep Package the change into reviewer-ready PR context.` |
+| Need to pause or resume later | `handoff` | `/ks-handoff Freeze the current context for later recovery.` |
 
 ### Step 4: Output the recommendation
 
@@ -117,16 +117,16 @@ Once the recommendation is output, stop. Let the downstream skill do the work. H
 
 ## Exception: User names a skill directly
 
-If the user says `/pf-review` or "I need a review", route directly to that skill. Do not force them back through the recommendation table.
+If the user says `/ks-review` or "I need a review", route directly to that skill. Do not force them back through the recommendation table.
 
 ## Exception: First-time user with no state
 
-If no `.primeflow/state.json` exists and the user has not described a task, append:
+If no `.keystone/state.json` exists and the user has not described a task, append:
 
 ```markdown
 ---
 **New here?** You can finish a real task in about 5 minutes. Read `docs/quickstart.md` or run:
-> /pf-orchestrate Route this task from the correct entry mode and push it to the smallest safe next step.
+> /ks-orchestrate Route this task from the correct entry mode and push it to the smallest safe next step.
 ---
 ```
 
@@ -149,16 +149,16 @@ Show the full scenario table from Step 3. This is the only case where help shows
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set last_decision "help-guided" >/dev/null 2>&1 || true
-$_PF_CLI state set artifacts.last_help_recommendation "${SUGGESTED_SKILL:-orchestrate}" >/dev/null 2>&1 || true
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set last_decision "help-guided" >/dev/null 2>&1 || true
+$_KS_CLI state set artifacts.last_help_recommendation "${SUGGESTED_SKILL:-orchestrate}" >/dev/null 2>&1 || true
 ```
 
 ## Telemetry
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"help\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"help-guided\",\"next_skill\":\"${SUGGESTED_SKILL:-orchestrate}\",\"first_run\":$([ -f .primeflow/.first-run ] && [ "$(find .primeflow/.first-run -mmin +0 2>/dev/null)" != "" ] && echo false || echo true)}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"help\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"help-guided\",\"next_skill\":\"${SUGGESTED_SKILL:-orchestrate}\",\"first_run\":$([ -f .keystone/.first-run ] && [ "$(find .keystone/.first-run -mmin +0 2>/dev/null)" != "" ] && echo false || echo true)}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

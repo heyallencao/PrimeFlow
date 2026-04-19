@@ -1,20 +1,20 @@
-# PrimeFlow vNext Roadmap
+# Keystone vNext Roadmap
 
-This roadmap is a compact English rewrite of the active PrimeFlow vNext direction.
+This roadmap is a compact English rewrite of the active Keystone vNext direction.
 
 ## North Star
 
-PrimeFlow should feel less like a personal workflow bundle and more like a shareable, installable workflow product with a clear public entry path, stronger closeout discipline, and better host consistency.
+Keystone should feel less like a personal workflow bundle and more like a shareable, installable workflow product with a clear public entry path, stronger closeout discipline, and better host consistency.
 
 ## Non-Goals
 
-- replacing existing host products with a fully separate PrimeFlow app
+- replacing existing host products with a fully separate Keystone app
 - shipping marketplace distribution before the install and runtime model is stable
 - adding more skills before the current ones are easier to discover and trust
 
 ## Current Block
 
-Make PrimeFlow easier to enter, easier to trust, and easier to ship across hosts without compromising the workflow contract.
+Make Keystone easier to enter, easier to trust, and easier to ship across hosts without compromising the workflow contract.
 
 ## Plan Type
 
@@ -22,7 +22,7 @@ Make PrimeFlow easier to enter, easier to trust, and easier to ship across hosts
 
 ## Direction Source
 
-This roadmap reflects the current PrimeFlow product direction after the English-first and OSS-readiness migration work.
+This roadmap reflects the current Keystone product direction after the English-first and OSS-readiness migration work.
 
 ## Scope
 
@@ -109,7 +109,7 @@ This roadmap reflects the current PrimeFlow product direction after the English-
 
 ### 3. Example Repositories And Cases
 
-- provide stronger concrete examples of PrimeFlow in use
+- provide stronger concrete examples of Keystone in use
 
 ### 4. Team-Versioned Distribution
 

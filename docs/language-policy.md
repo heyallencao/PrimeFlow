@@ -1,10 +1,10 @@
-# PrimeFlow Language Policy
+# Keystone Language Policy
 
-This document defines how PrimeFlow handles language across docs, runtime skills, and mirrored content.
+This document defines how Keystone handles language across docs, runtime skills, and mirrored content.
 
 ## Canonical Rule
 
-English is the canonical language for PrimeFlow.
+English is the canonical language for Keystone.
 
 That applies to:
 
@@ -46,7 +46,7 @@ When translating an existing canonical surface:
 
 ## Mirror Scope
 
-PrimeFlow does not promise a full Chinese mirror for every file.
+Keystone does not promise a full Chinese mirror for every file.
 
 Priority order:
 

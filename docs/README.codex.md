@@ -1,21 +1,21 @@
-# PrimeFlow for Codex
+# Keystone for Codex
 
-Guide for using PrimeFlow with Codex through the installed public `pf-*` skills.
+Guide for using Keystone with Codex through the installed public `ks-*` skills.
 
 ## Quick Install
 
 Tell Codex:
 
 ```text
-Fetch and follow instructions from https://raw.githubusercontent.com/heyallencao/PrimeFlow/refs/heads/main/.codex/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/heyallencao/Keystone/refs/heads/main/.codex/INSTALL.md
 ```
 
 ## Manual Installation
 
 ```bash
-git clone https://github.com/heyallencao/PrimeFlow.git ~/.codex/PrimeFlow
-cd ~/.codex/PrimeFlow
-./primeflow install --agent codex
+git clone https://github.com/heyallencao/Keystone.git ~/.codex/Keystone
+cd ~/.codex/Keystone
+./keystone install --agent codex
 ```
 
 Then restart Codex.
@@ -25,15 +25,15 @@ Then restart Codex.
 After restart, paste one of these directly into Codex:
 
 ```text
-/pf-help
+/ks-help
 ```
 
 ```text
-/pf-orchestrate Route this task from the correct entry mode and choose the smallest safe next step.
+/ks-orchestrate Route this task from the correct entry mode and choose the smallest safe next step.
 ```
 
 ```text
-/pf-brief Compress the context below into a one-page execution brief and recommend the next skill.
+/ks-brief Compress the context below into a one-page execution brief and recommend the next skill.
 ```
 
 ## Generate Codex Skill Docs
@@ -41,30 +41,30 @@ After restart, paste one of these directly into Codex:
 If you want the Codex-facing public skill wrappers directly in the repo, run:
 
 ```bash
-./primeflow gen skill-docs --agent codex --output ./.agents/skills --force
+./keystone gen skill-docs --agent codex --output ./.agents/skills --force
 ```
 
-This generates one public `pf-*` skill directory per PrimeFlow entry under `.agents/skills/`.
+This generates one public `ks-*` skill directory per Keystone entry under `.agents/skills/`.
 
 ## How It Works
 
-PrimeFlow installs the public `pf-*` skills to:
+Keystone installs the public `ks-*` skills to:
 
-- `~/.agents/skills/pf-help`
-- `~/.agents/skills/pf-orchestrate`
-- `~/.agents/skills/pf-handoff`
-- `~/.agents/skills/pf-review`
+- `~/.agents/skills/ks-help`
+- `~/.agents/skills/ks-orchestrate`
+- `~/.agents/skills/ks-handoff`
+- `~/.agents/skills/ks-review`
 - ...
 
-It also installs the shared PrimeFlow runtime to:
+It also installs the shared Keystone runtime to:
 
-- `~/.primeflow/runtime/PrimeFlow`
+- `~/.keystone/runtime/Keystone`
 
-Codex reads the public `pf-*` skills from `~/.agents/skills/pf-*`. The shared runtime stays under `~/.primeflow/runtime/PrimeFlow` for CLI access and shared assets. This prevents duplicate skill entries in the Codex UI.
+Codex reads the public `ks-*` skills from `~/.agents/skills/ks-*`. The shared runtime stays under `~/.keystone/runtime/Keystone` for CLI access and shared assets. This prevents duplicate skill entries in the Codex UI.
 
 ## Usage
 
-After restart, Codex can call PrimeFlow directly with `/pf-*`.
+After restart, Codex can call Keystone directly with `/ks-*`.
 
 Recommended first entries:
 

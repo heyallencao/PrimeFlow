@@ -1,11 +1,11 @@
 # Handoff Package
 
-PrimeFlow handoff is not a summary report. It is a transfer package that lets the next session continue work immediately.
+Keystone handoff is not a summary report. It is a transfer package that lets the next session continue work immediately.
 
 ## Directory Structure
 
 ```text
-.primeflow/handoff/<handoff_id>/
+.keystone/handoff/<handoff_id>/
 ├── handoff.md
 └── snapshot.json
 ```

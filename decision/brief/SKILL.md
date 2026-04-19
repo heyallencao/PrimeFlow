@@ -1,5 +1,5 @@
 ---
-name: pf-brief
+name: ks-brief
 description: "Lightweight task compressor. Turn messy input into a one-page brief that can route to roundtable or writing-plan without replacing direction decisions."
 layer: decision
 owner: brief
@@ -133,16 +133,16 @@ When the brief has more unknowns than confirmed facts:
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set last_decision "brief-defined" >/dev/null 2>&1 || true
-$_PF_CLI state set artifacts.latest_brief_status "defined" >/dev/null 2>&1 || true
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set last_decision "brief-defined" >/dev/null 2>&1 || true
+$_KS_CLI state set artifacts.latest_brief_status "defined" >/dev/null 2>&1 || true
 ```
 
 ## Telemetry
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"brief\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"brief-defined\",\"next_skill\":\"${NEXT_SKILL:-roundtable}\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"brief\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"brief-defined\",\"next_skill\":\"${NEXT_SKILL:-roundtable}\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

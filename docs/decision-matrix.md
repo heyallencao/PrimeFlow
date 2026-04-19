@@ -1,6 +1,6 @@
-# PrimeFlow Decision Matrix
+# Keystone Decision Matrix
 
-This document compresses the common exit semantics of PrimeFlow skills into one shared table.
+This document compresses the common exit semantics of Keystone skills into one shared table.
 
 It answers:
 
@@ -12,7 +12,7 @@ It does not replace each skill's `SKILL.md`, but it gives host implementations a
 
 ## How To Use It
 
-When implementing PrimeFlow for Claude, Codex, or Gemini:
+When implementing Keystone for Claude, Codex, or Gemini:
 
 - presentation may differ
 - prompt framing may differ
@@ -80,7 +80,7 @@ At minimum, keep these aligned:
 2. `next_skill`
 3. failure routing and fallback wording
 
-If those stay aligned, the user still experiences one coherent PrimeFlow system even when host presentation differs.
+If those stay aligned, the user still experiences one coherent Keystone system even when host presentation differs.
 
 ## Related Docs
 

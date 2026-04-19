@@ -1,5 +1,5 @@
 ---
-name: pf-bug-triage
+name: ks-bug-triage
 description: "Fast failure classifier. Decide whether the problem is a spec gap, an implementation bug, or a rollback candidate before routing to writing-plan, diagnose, or ship."
 layer: execution
 owner: bug-triage
@@ -172,16 +172,16 @@ When evidence supports both `spec-gap` and `implementation-bug`:
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set last_decision "triage-complete" >/dev/null 2>&1 || true
-$_PF_CLI state set artifacts.last_triage_result "${TRIAGE_RESULT:-implementation-bug}" >/dev/null 2>&1 || true
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set last_decision "triage-complete" >/dev/null 2>&1 || true
+$_KS_CLI state set artifacts.last_triage_result "${TRIAGE_RESULT:-implementation-bug}" >/dev/null 2>&1 || true
 ```
 
 ## Telemetry
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"bug-triage\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"triage-complete\",\"triage_result\":\"${TRIAGE_RESULT:-implementation-bug}\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"bug-triage\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"triage-complete\",\"triage_result\":\"${TRIAGE_RESULT:-implementation-bug}\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

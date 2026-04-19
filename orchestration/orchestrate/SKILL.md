@@ -1,5 +1,5 @@
 ---
-name: pf-orchestrate
+name: ks-orchestrate
 description: "Global routing hub. Determine the correct entry mode, choose the next skill, and manage workflow state. Route session-transfer requests to handoff."
 layer: orchestration
 owner: orchestrate
@@ -25,7 +25,7 @@ request_kinds:
 
 # Orchestrate
 
-PrimeFlow's router. Three jobs: detect entry mode, pick the next skill, update state.
+Keystone's router. Three jobs: detect entry mode, pick the next skill, update state.
 
 **Responsible for**: entry_mode decision, next_skill selection, state mutation, handoff routing.
 **Not responsible for**: deep analysis, implementation, quality judgment, forcing everything through roundtable.
@@ -39,7 +39,7 @@ Handoff is a separate skill: `orchestration/handoff/SKILL.md`. Orchestrate only 
 ### Step 1: Detect environment
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 _BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 _PENDING=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 echo "Branch: $_BRANCH | Pending changes: $_PENDING"
@@ -51,25 +51,25 @@ echo "Branch: $_BRANCH | Pending changes: $_PENDING"
 ### Step 2: Initialize state if missing
 
 ```bash
-if [ ! -f ".primeflow/state.json" ]; then
+if [ ! -f ".keystone/state.json" ]; then
   echo "No state file. Initializing."
-  $_PF_CLI state init >/dev/null
+  $_KS_CLI state init >/dev/null
 fi
 ```
 
-- expected: `.primeflow/state.json` now exists
+- expected: `.keystone/state.json` now exists
 - failure: CLI not found → tell user to check installation, stop
 
 ### Step 3: Read current state
 
 ```bash
-_CURRENT_STAGE=$($_PF_CLI state get current_stage 2>/dev/null | tr -d '"')
-_CURRENT_BLOCK=$($_PF_CLI state get current_block 2>/dev/null | tr -d '"')
-_LAST_SKILL=$($_PF_CLI state get last_skill 2>/dev/null | tr -d '"')
-_ENTRY_MODE=$($_PF_CLI state get entry_mode 2>/dev/null | tr -d '"')
-_RISK_LEVEL=$($_PF_CLI state get risk_level 2>/dev/null | tr -d '"')
-_PLAN_DOC=$($_PF_CLI state get artifacts.plan_document 2>/dev/null | tr -d '"')
-_ROUTING_COUNT=$($_PF_CLI state get routing_count 2>/dev/null | tr -d '"')
+_CURRENT_STAGE=$($_KS_CLI state get current_stage 2>/dev/null | tr -d '"')
+_CURRENT_BLOCK=$($_KS_CLI state get current_block 2>/dev/null | tr -d '"')
+_LAST_SKILL=$($_KS_CLI state get last_skill 2>/dev/null | tr -d '"')
+_ENTRY_MODE=$($_KS_CLI state get entry_mode 2>/dev/null | tr -d '"')
+_RISK_LEVEL=$($_KS_CLI state get risk_level 2>/dev/null | tr -d '"')
+_PLAN_DOC=$($_KS_CLI state get artifacts.plan_document 2>/dev/null | tr -d '"')
+_ROUTING_COUNT=$($_KS_CLI state get routing_count 2>/dev/null | tr -d '"')
 [ -z "$_ROUTING_COUNT" ] && _ROUTING_COUNT=0
 
 echo "Stage: $_CURRENT_STAGE | Block: $_CURRENT_BLOCK | Last: $_LAST_SKILL"
@@ -145,7 +145,7 @@ if [ -z "$_ENTRY_MODE" ] || [ "$_ENTRY_MODE" = "null" ] || [ "$_ENTRY_MODE" = "i
     *)
       _ENTRY_MODE="from-scratch" ;;
   esac
-  $_PF_CLI state set entry_mode "$_ENTRY_MODE" >/dev/null
+  $_KS_CLI state set entry_mode "$_ENTRY_MODE" >/dev/null
   echo "Entry mode inferred: $_ENTRY_MODE"
 fi
 ```
@@ -209,7 +209,7 @@ Before writing state, confirm:
 ```bash
 # Validate: no review without verify evidence
 if [ "$_ROUTING" = "review" ]; then
-  _VR=$($_PF_CLI state get verify_result 2>/dev/null | tr -d '"')
+  _VR=$($_KS_CLI state get verify_result 2>/dev/null | tr -d '"')
   if [ "$_VR" = "null" ] || [ -z "$_VR" ]; then
     echo "INVALID ROUTE: review without verify evidence. Re-routing to verify."
     _ROUTING="verify"
@@ -219,7 +219,7 @@ fi
 
 # Validate: no ship without review evidence
 if [ "$_ROUTING" = "ship" ]; then
-  _RR=$($_PF_CLI state get review_result 2>/dev/null | tr -d '"')
+  _RR=$($_KS_CLI state get review_result 2>/dev/null | tr -d '"')
   if [ "$_RR" = "null" ] || [ -z "$_RR" ]; then
     echo "INVALID ROUTE: ship without review evidence. Re-routing to review."
     _ROUTING="review"
@@ -234,7 +234,7 @@ fi
 ### Step 9: Update state atomically
 
 ```bash
-_STATE_FILE=".primeflow/state.json"
+_STATE_FILE=".keystone/state.json"
 
 # Simple file lock
 _maxwait=5 _waited=0
@@ -245,26 +245,26 @@ touch "${_STATE_FILE}.lock"
 trap 'rm -f "${_STATE_FILE}.lock"' EXIT
 
 # Reset routing count if stage actually changed
-_STAGE_BEFORE=$($_PF_CLI state get current_stage 2>/dev/null | tr -d '"')
+_STAGE_BEFORE=$($_KS_CLI state get current_stage 2>/dev/null | tr -d '"')
 if [ "$_STAGE_BEFORE" != "$_ROUTING" ]; then
   _FINAL_COUNT=0
 else
   _FINAL_COUNT=$_NEW_COUNT
 fi
 
-$_PF_CLI state set current_stage "$_ROUTING" >/dev/null
-$_PF_CLI state set last_skill "orchestrate" >/dev/null
-$_PF_CLI state set last_decision "route-$_ROUTING" >/dev/null
-$_PF_CLI state set routing_count "$_FINAL_COUNT" >/dev/null
+$_KS_CLI state set current_stage "$_ROUTING" >/dev/null
+$_KS_CLI state set last_skill "orchestrate" >/dev/null
+$_KS_CLI state set last_decision "route-$_ROUTING" >/dev/null
+$_KS_CLI state set routing_count "$_FINAL_COUNT" >/dev/null
 
 if [ "$_ESCALATE" = "true" ]; then
-  $_PF_CLI state set exit_code "paused" >/dev/null
-  $_PF_CLI state set exit_reason "$_REASONING" >/dev/null
-  $_PF_CLI state set next_skill "" >/dev/null
+  $_KS_CLI state set exit_code "paused" >/dev/null
+  $_KS_CLI state set exit_reason "$_REASONING" >/dev/null
+  $_KS_CLI state set next_skill "" >/dev/null
 else
-  $_PF_CLI state set exit_code "ok" >/dev/null
-  $_PF_CLI state set exit_reason "$_REASONING" >/dev/null
-  $_PF_CLI state set next_skill "$_ROUTING" >/dev/null
+  $_KS_CLI state set exit_code "ok" >/dev/null
+  $_KS_CLI state set exit_reason "$_REASONING" >/dev/null
+  $_KS_CLI state set next_skill "$_ROUTING" >/dev/null
 fi
 
 rm -f "${_STATE_FILE}.lock"
@@ -276,8 +276,8 @@ rm -f "${_STATE_FILE}.lock"
 ### Step 10: Emit telemetry and output routing
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"orchestrate\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"route-$_ROUTING\",\"confidence\":${_CONFIDENCE:-0.9},\"entry_mode\":\"${_ENTRY_MODE:-unknown}\",\"risk_level\":\"${_RISK_LEVEL:-unknown}\",\"escalate\":$([ "${_ESCALATE:-false}" = "true" ] && echo true || echo false)}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"orchestrate\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"route-$_ROUTING\",\"confidence\":${_CONFIDENCE:-0.9},\"entry_mode\":\"${_ENTRY_MODE:-unknown}\",\"risk_level\":\"${_RISK_LEVEL:-unknown}\",\"escalate\":$([ "${_ESCALATE:-false}" = "true" ] && echo true || echo false)}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 Output format:
@@ -291,7 +291,7 @@ Output format:
 **Reasoning**: [1-2 sentences]
 **Escalate**: [true/false]
 
-> Next: `/pf-[skill] [one-sentence task description]`
+> Next: `/ks-[skill] [one-sentence task description]`
 ```
 
 ---
@@ -312,7 +312,7 @@ Output format:
 
 ## Exception: Handoff request with no handoff packages
 
-- **Trigger**: user says "handoff in latest" but `.primeflow/handoff/` is empty
+- **Trigger**: user says "handoff in latest" but `.keystone/handoff/` is empty
 - **Procedure**: route to handoff skill anyway — handoff will report "no packages found" and suggest handoff out instead
 - **Recovery**: user creates a handoff package, then restores
 - **State update**: routing=handoff

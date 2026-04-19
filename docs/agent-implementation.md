@@ -1,14 +1,14 @@
-# PrimeFlow Agent Implementation
+# Keystone Agent Implementation
 
 This document answers a practical implementation question:
 
-> How do Claude, Codex, and Gemini deliver different host experiences without letting PrimeFlow semantics drift?
+> How do Claude, Codex, and Gemini deliver different host experiences without letting Keystone semantics drift?
 
 It is not an installation guide and not a methodology overview.
 
 ## Current Priority Order
 
-At the current stage, PrimeFlow implementation should prioritize:
+At the current stage, Keystone implementation should prioritize:
 
 1. skill semantic consistency
 2. public entry-name consistency
@@ -88,9 +88,9 @@ Hosts may expose them differently, but the names should not fork.
 
 ### 1. Entry shape
 
-- Claude: `/pf-*`
-- Codex: `/pf-*`
-- Gemini: `/pf-*`
+- Claude: `/ks-*`
+- Codex: `/ks-*`
+- Gemini: `/ks-*`
 
 The real difference is usually how the host exposes the entry, not what it is called.
 
@@ -145,7 +145,7 @@ When adding a new skill, answer these:
 
 When implementing or adapting a host surface, keep these in sync:
 
-- `primeflow.manifest.json`
+- `keystone.manifest.json`
 - `README.md`
 - `docs/decision-matrix.md`
 - the relevant `SKILL.md`
@@ -155,7 +155,7 @@ Do not only change the host entry surface while leaving the shared protocol expl
 
 ## Manifest Conventions
 
-`primeflow.manifest.json` can now express host-facing metadata such as:
+`keystone.manifest.json` can now express host-facing metadata such as:
 
 - `agentFacing.primaryEntrySkills`
 - `agentFacing.highFrequencySkills`

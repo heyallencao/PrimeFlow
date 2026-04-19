@@ -1,5 +1,5 @@
 ---
-name: pf-pr-prep
+name: ks-pr-prep
 description: "Delivery-context organizer. Compress post-review changes into reviewer-ready PR and merge context without replacing release decisions."
 layer: operation
 owner: pr-prep
@@ -149,16 +149,16 @@ When review or verification reports are not available:
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set last_decision "pr-context-ready" >/dev/null 2>&1 || true
-$_PF_CLI state set artifacts.pr_prep_status "ready" >/dev/null 2>&1 || true
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set last_decision "pr-context-ready" >/dev/null 2>&1 || true
+$_KS_CLI state set artifacts.pr_prep_status "ready" >/dev/null 2>&1 || true
 ```
 
 ## Telemetry
 
 ```bash
-mkdir -p .primeflow/telemetry/events
-echo "{\"skill\":\"pr-prep\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"pr-context-ready\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+mkdir -p .keystone/telemetry/events
+echo "{\"skill\":\"pr-prep\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"pr-context-ready\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

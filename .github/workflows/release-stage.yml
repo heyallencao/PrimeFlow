@@ -1,0 +1,76 @@
+name: Release Stage
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_label:
+        description: Optional label appended to the staged payload artifact name
+        required: false
+        type: string
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  staged-payload:
+    name: Build staged payload
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run generated skill doc drift check
+        run: npm run test:generated-skill-docs
+
+      - name: Run English-first repository checks
+        run: npm run test:english-foundation
+
+      - name: Run smoke test
+        run: npm run smoke
+
+      - name: Build staged payload
+        run: npm run build:release-stage
+
+      - name: Package staged payload archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION_LABEL="${GITHUB_REF_NAME:-manual}"
+          if [ -n "${{ github.event.inputs.artifact_label }}" ]; then
+            VERSION_LABEL="${VERSION_LABEL}-${{ github.event.inputs.artifact_label }}"
+          fi
+          ARCHIVE_BASENAME="keystone-release-stage-${VERSION_LABEL}"
+          tar -czf "dist/${ARCHIVE_BASENAME}.tar.gz" -C dist/release Keystone
+          shasum -a 256 "dist/${ARCHIVE_BASENAME}.tar.gz" > "dist/${ARCHIVE_BASENAME}.sha256"
+          {
+            echo "## Release Stage Artifact"
+            echo ""
+            echo "- version label: \`${VERSION_LABEL}\`"
+            echo "- staged payload directory: \`dist/release/Keystone\`"
+            echo "- archive: \`dist/${ARCHIVE_BASENAME}.tar.gz\`"
+            echo "- checksum: \`dist/${ARCHIVE_BASENAME}.sha256\`"
+            echo ""
+            echo "This workflow builds the existing \`release-install-stage\` payload. It does not publish Keystone to npm."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload staged payload directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: keystone-release-stage-directory
+          path: dist/release/Keystone
+
+      - name: Upload staged payload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: keystone-release-stage-archive
+          path: |
+            dist/*.tar.gz
+            dist/*.sha256

@@ -2,18 +2,18 @@
 name: state-lock-race
 type: bug
 category: runtime-errors
-keywords: [state, lock, race, concurrent, stale, .primeflow]
+keywords: [state, lock, race, concurrent, stale, .keystone]
 module: orchestrate
 date: 2026-04-18
 ---
 
 ## Problem
-Two concurrent `primeflow state set` calls can race on the lock file, causing one write to be lost or the state file to become empty.
+Two concurrent `keystone state set` calls can race on the lock file, causing one write to be lost or the state file to become empty.
 
 ## Symptoms
 - state.json becomes `{}` or `null` after rapid consecutive skill runs
 - `state get` returns `undefined` for fields that were previously set
-- Lock file `.primeflow/state.json.lock` persists after a crashed process
+- Lock file `.keystone/state.json.lock` persists after a crashed process
 
 ## What Didn't Work
 - Simple `touch`/`rm` lock files: they don't survive process crashes

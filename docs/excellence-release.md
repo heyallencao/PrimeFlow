@@ -1,4 +1,4 @@
-# PrimeFlow Excellence Release
+# Keystone Excellence Release
 
 This document describes the changes delivered in the excellence release, what each change does, how to use the new capabilities, and what to expect when upgrading from a prior installation.
 
@@ -52,15 +52,15 @@ A shared preamble is referenced by every SKILL.md. It defines:
 
 This makes all 18 skills read as one coherent system rather than 18 independent authors.
 
-### 3. First-Run Ritual (`pf-help`)
+### 3. First-Run Ritual (`ks-help`)
 
-`/pf-help` now runs a progressive onboarding sequence on first use:
+`/ks-help` now runs a progressive onboarding sequence on first use:
 
 1. First run: one-paragraph intro, quickstart link
 2. Telemetry consent: community/anonymous/off (defaults to off)
 3. Proactive skill suggestion consent (defaults to false)
 
-Each gate fires exactly once, controlled by flag files under `.primeflow/`. Subsequent runs skip the ritual and go straight to the routing table.
+Each gate fires exactly once, controlled by flag files under `.keystone/`. Subsequent runs skip the ritual and go straight to the routing table.
 
 ### 4. Review Specialist System (`decision/review/specialists/`)
 
@@ -96,7 +96,7 @@ The review procedure includes:
 - confidence boosting (2+ independent specialists flag same issue: +0.10 up to 1.0)
 - fix classification (safe_auto / gated_auto / manual / advisory)
 
-### 5. Scaled QA Pipeline (`pf-qa`)
+### 5. Scaled QA Pipeline (`ks-qa`)
 
 QA is no longer a 3-tag Playwright check. It runs a scaled pipeline:
 
@@ -120,12 +120,12 @@ Self-regulation:
 - WTF-likelihood score: reverts +15%, multi-file fixes +5%
 - WTF > 20%: stop and ask user
 
-### 6. CI/CD-Aware Ship Pipeline (`pf-ship`)
+### 6. CI/CD-Aware Ship Pipeline (`ks-ship`)
 
 Ship now detects the project's CI/CD setup before producing commands. A new CLI command does the detection:
 
 ```bash
-./primeflow detect-ci
+./keystone detect-ci
 ```
 
 Output:
@@ -142,7 +142,7 @@ Output:
 
 Detection covers: GitHub Actions, Jenkins, Make, Node (package.json), Python (pyproject.toml).
 
-When detection succeeds, `pf-ship` produces project-specific commands. When detection returns unknown, it falls back to advisory mode with improved prompts.
+When detection succeeds, `ks-ship` produces project-specific commands. When detection returns unknown, it falls back to advisory mode with improved prompts.
 
 The ship procedure also includes a cross-model second opinion step: if `codex` or `gemini` CLI is available, run a lightweight secondary review and synthesize findings (overlap = high confidence, unique = blind spot).
 
@@ -152,24 +152,24 @@ Six new state fields enforce per-skill iteration limits:
 
 | Field | Skill | Limit | Action on limit |
 |---|---|---|---|
-| `implement_scope_expansions` | pf-implement | 3 expansions | pause and ask user |
-| `verify_failure_count` | pf-verify | 2 failures | route to diagnose |
-| `qa_fix_count` | pf-qa | 50 (hard cap) | stop and ask |
-| `qa_wtf_likelihood` | pf-qa | 0.20 (20%) | stop and ask |
-| `roundtable_low_info_answers` | pf-roundtable | 2 consecutive | force conclusion |
-| `writing_plan_revisions` | pf-writing-plan | 3 revisions | escalate to roundtable |
+| `implement_scope_expansions` | ks-implement | 3 expansions | pause and ask user |
+| `verify_failure_count` | ks-verify | 2 failures | route to diagnose |
+| `qa_fix_count` | ks-qa | 50 (hard cap) | stop and ask |
+| `qa_wtf_likelihood` | ks-qa | 0.20 (20%) | stop and ask |
+| `roundtable_low_info_answers` | ks-roundtable | 2 consecutive | force conclusion |
+| `writing_plan_revisions` | ks-writing-plan | 3 revisions | escalate to roundtable |
 
 Counters reset to 0 when the skill completes or when routing moves to a different stage.
 
-### 8. Developer Profile (`primeflow profile`)
+### 8. Developer Profile (`keystone profile`)
 
 A new profile system accumulates user preferences across sessions:
 
 ```bash
-./primeflow profile init
-./primeflow profile set autonomy autonomous
-./primeflow profile set scope_appetite conservative --inferred
-./primeflow profile show
+./keystone profile init
+./keystone profile set autonomy autonomous
+./keystone profile set scope_appetite conservative --inferred
+./keystone profile show
 ```
 
 Shape:
@@ -196,7 +196,7 @@ User-origin gating:
 
 V1 scope: observational only. No behavioral changes yet. The profile is surfaced in handoff previews.
 
-### 9. Knowledge Base with CLI Search (`primeflow knowledge`)
+### 9. Knowledge Base with CLI Search (`keystone knowledge`)
 
 A structured knowledge base lives in `docs/solutions/` with frontmatter-indexed files:
 
@@ -214,18 +214,18 @@ date: 2026-04-18
 CLI commands:
 
 ```bash
-./primeflow knowledge search state lock race   # scored search
-./primeflow knowledge list                     # list all artifacts
-./primeflow knowledge check                   # discoverability + frontmatter check
+./keystone knowledge search state lock race   # scored search
+./keystone knowledge list                     # list all artifacts
+./keystone knowledge check                   # discoverability + frontmatter check
 ```
 
 Search scores candidates by keyword match against frontmatter and body content. Results are sorted by relevance.
 
-The `pf-knowledge` skill now uses `./primeflow knowledge search` instead of `echo "Search: [keywords]"`.
+The `ks-knowledge` skill now uses `./keystone knowledge search` instead of `echo "Search: [keywords]"`.
 
 ### 10. Subagent Dispatch for Review (Claude Code)
 
-When running under Claude Code, `pf-review` can dispatch specialist personas as parallel subagents using the Task tool, instead of running them sequentially in a single context.
+When running under Claude Code, `ks-review` can dispatch specialist personas as parallel subagents using the Task tool, instead of running them sequentially in a single context.
 
 Mode detection:
 
@@ -251,7 +251,7 @@ The full improvement plan with three waves, dependency analysis, context budget 
 
 ## New State Fields
 
-Nine new fields in `.primeflow/state.json`:
+Nine new fields in `.keystone/state.json`:
 
 | Field | Type | Default | Purpose |
 |---|---|---|---|
@@ -269,9 +269,9 @@ Nine new fields in `.primeflow/state.json`:
 
 | Command | What it does |
 |---|---|
-| `primeflow detect-ci` | detect CI/CD setup, output structured JSON |
-| `primeflow profile init/get/set/show` | manage developer profile |
-| `primeflow knowledge search/list/check` | search and manage knowledge base |
+| `keystone detect-ci` | detect CI/CD setup, output structured JSON |
+| `keystone profile init/get/set/show` | manage developer profile |
+| `keystone knowledge search/list/check` | search and manage knowledge base |
 
 ## New Files
 
@@ -297,23 +297,23 @@ docs/excellence-release.md                              this document
 
 ## Upgrading
 
-If you already have PrimeFlow installed:
+If you already have Keystone installed:
 
 1. Pull the latest main branch
-2. Reinstall: `./primeflow install --agents claude,codex,gemini`
+2. Reinstall: `./keystone install --agents claude,codex,gemini`
 3. Restart your agent
-4. The first `/pf-help` run will trigger the onboarding ritual (one-time only)
+4. The first `/ks-help` run will trigger the onboarding ritual (one-time only)
 
-Existing `.primeflow/state.json` files will continue to work. The new fields are added with defaults on next `state init`. Existing workflow state (current_stage, verify_result, etc.) is preserved.
+Existing `.keystone/state.json` files will continue to work. The new fields are added with defaults on next `state init`. Existing workflow state (current_stage, verify_result, etc.) is preserved.
 
-Existing `docs/solutions/` content without frontmatter will still be found by `knowledge search`, but scored lower than frontmatter-indexed files. Run `./primeflow knowledge check` to see which artifacts need frontmatter added.
+Existing `docs/solutions/` content without frontmatter will still be found by `knowledge search`, but scored lower than frontmatter-indexed files. Run `./keystone knowledge check` to see which artifacts need frontmatter added.
 
 ## What Was Not Changed
 
 - The 18-skill set (no new skills, no removed skills)
 - Decision contract labels and semantics
 - State file version (still 1.0.0)
-- The `primeflow` CLI entry point
+- The `keystone` CLI entry point
 - Install paths and distribution model
 - The core workflow contract (flexible entry, honest exit)
 

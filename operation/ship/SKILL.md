@@ -1,5 +1,5 @@
 ---
-name: pf-ship
+name: ks-ship
 description: "Delivery closeout before release. Accepts review-approved changes, runs the final checks, generates execution guidance, and performs merge/deploy/canary only when the project is explicitly adapted for it."
 layer: operation
 owner: ship
@@ -76,15 +76,15 @@ echo "[1-5] Checklist complete. WARNs recorded for report."
 
 ### Step 2: CI/CD detection
 
-Try `primeflow detect-ci` first. If the CLI is unavailable or returns unknown, fall back to manual file inspection.
+Try `keystone detect-ci` first. If the CLI is unavailable or returns unknown, fall back to manual file inspection.
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 _CI_TYPE="unknown" _TEST_CMD="" _COVERAGE_CMD="" _DEPLOY_CMD="" _TARGET_BRANCH=""
 
-# --- Attempt 1: primeflow detect-ci ---
-if command -v primeflow >/dev/null 2>&1 || [ -x "$_PF_CLI" ]; then
-  _DETECT_OUTPUT=$($_PF_CLI detect-ci 2>/dev/null) && _DETECT_EXIT=0 || _DETECT_EXIT=$?
+# --- Attempt 1: keystone detect-ci ---
+if command -v keystone >/dev/null 2>&1 || [ -x "$_KS_CLI" ]; then
+  _DETECT_OUTPUT=$($_KS_CLI detect-ci 2>/dev/null) && _DETECT_EXIT=0 || _DETECT_EXIT=$?
   if [ "$_DETECT_EXIT" = "0" ] && [ -n "$_DETECT_OUTPUT" ]; then
     echo "detect-ci succeeded"
     _CI_TYPE=$(echo "$_DETECT_OUTPUT" | grep -o '"type"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*:"//;s/"//')
@@ -419,7 +419,7 @@ echo "Ship result: $_SHIP_RESULT"
 
 ```bash
 _SHIP_RESULT="${SHIP_RESULT:?set SHIP_RESULT to done|canary_failed|advisory}"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 
 case "$_SHIP_RESULT" in
   done)
@@ -433,18 +433,18 @@ case "$_SHIP_RESULT" in
     _EXIT_REASON="Required commands or execution authority were missing"; _NEXT="orchestrate" ;;
 esac
 
-$_PF_CLI state set current_stage "ship" >/dev/null
-$_PF_CLI state set ship_result "$_SHIP_RESULT" >/dev/null
-$_PF_CLI state set last_decision "$_DECISION" >/dev/null
-$_PF_CLI state set exit_code "$_EXIT_CODE" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_NEXT" >/dev/null
+$_KS_CLI state set current_stage "ship" >/dev/null
+$_KS_CLI state set ship_result "$_SHIP_RESULT" >/dev/null
+$_KS_CLI state set last_decision "$_DECISION" >/dev/null
+$_KS_CLI state set exit_code "$_EXIT_CODE" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_NEXT" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"ship\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_DECISION\",\"confidence\":0.9,\"ship_result\":\"$_SHIP_RESULT\",\"mode\":\"$_MODE\",\"ci_type\":\"${_CI_TYPE:-unknown}\",\"deploy_status\":\"${_DEPLOY_RESULT:-advisory}\",\"canary\":\"${_CANARY_RESULT:-advisory}\",\"second_opinion\":\"${_SECOND_OPINION:-none}\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"ship\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_DECISION\",\"confidence\":0.9,\"ship_result\":\"$_SHIP_RESULT\",\"mode\":\"$_MODE\",\"ci_type\":\"${_CI_TYPE:-unknown}\",\"deploy_status\":\"${_DEPLOY_RESULT:-advisory}\",\"canary\":\"${_CANARY_RESULT:-advisory}\",\"second_opinion\":\"${_SECOND_OPINION:-none}\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

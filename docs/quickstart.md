@@ -1,4 +1,4 @@
-# PrimeFlow in 5 Minutes
+# Keystone in 5 Minutes
 
 This guide uses one small real task to walk from installation to fresh evidence.
 
@@ -14,14 +14,14 @@ You have a Python function that accepts user input but performs no validation. Y
 2. reject strings longer than 200 characters
 3. prove the change is correct instead of only assuming it is correct
 
-This is a small task with clear boundaries, which makes it a good first PrimeFlow run.
+This is a small task with clear boundaries, which makes it a good first Keystone run.
 
 ## Step 1: Start with help
 
 Input:
 
 ```text
-/pf-help
+/ks-help
 ```
 
 Example response:
@@ -35,15 +35,15 @@ Why: the background still needs to be compressed into one executable page before
 
 Copy this and send it next:
 
-> /pf-brief Compress the background below into a one-page execution brief.
+> /ks-brief Compress the background below into a one-page execution brief.
 ```
 
-The important part is not the label. The important part is that PrimeFlow gives you one concrete next sentence.
+The important part is not the label. The important part is that Keystone gives you one concrete next sentence.
 
 ## Step 2: Compress the task into a brief
 
 ```text
-/pf-brief Compress the background below into a one-page execution brief.
+/ks-brief Compress the background below into a one-page execution brief.
 
 Background: I have a validate_input(text) function with no validation.
 I want two checks: empty strings should fail, and strings longer than 200 characters should fail.
@@ -69,7 +69,7 @@ Now the task has a boundary.
 ## Step 3: Produce a real plan
 
 ```text
-/pf-writing-plan Turn the approved brief above into the current executable block.
+/ks-writing-plan Turn the approved brief above into the current executable block.
 ```
 
 Example response:
@@ -90,12 +90,12 @@ Risk level: low
 Next skill: test-first
 ```
 
-PrimeFlow is now defining what done means, not just what to change.
+Keystone is now defining what done means, not just what to change.
 
 ## Step 4: Implement against the contract
 
 ```text
-/pf-implement Implement the current block without expanding scope.
+/ks-implement Implement the current block without expanding scope.
 ```
 
 Example change:
@@ -114,7 +114,7 @@ The implementation step should stay inside the plan.
 ## Step 5: Collect fresh evidence
 
 ```text
-/pf-verify Validate that the change actually meets the done criteria.
+/ks-verify Validate that the change actually meets the done criteria.
 ```
 
 Example response:
@@ -139,12 +139,12 @@ verify_result: pass
 next_skill: review
 ```
 
-This is the core PrimeFlow idea: evidence comes from execution, not from confidence.
+This is the core Keystone idea: evidence comes from execution, not from confidence.
 
 ## What You Just Did
 
 ```text
-pf-help -> pf-brief -> pf-writing-plan -> pf-implement -> pf-verify
+ks-help -> ks-brief -> ks-writing-plan -> ks-implement -> ks-verify
 ```
 
 Each step had one job:
@@ -162,17 +162,17 @@ Each step had one job:
 Formal review:
 
 ```text
-/pf-review
+/ks-review
 ```
 
 Prepare PR context:
 
 ```text
-/pf-pr-prep
+/ks-pr-prep
 ```
 
 If you are stuck at any point:
 
 ```text
-/pf-help
+/ks-help
 ```

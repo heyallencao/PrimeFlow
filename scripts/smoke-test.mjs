@@ -8,19 +8,19 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const cliPath = path.join(workspaceRoot, "bin", "primeflow.mjs");
+const cliPath = path.join(workspaceRoot, "bin", "keystone.mjs");
 const installScriptPath = path.join(workspaceRoot, "scripts", "install.sh");
-const manifest = JSON.parse(fs.readFileSync(path.join(workspaceRoot, "primeflow.manifest.json"), "utf8"));
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "primeflow-smoke-"));
+const manifest = JSON.parse(fs.readFileSync(path.join(workspaceRoot, "keystone.manifest.json"), "utf8"));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "keystone-smoke-"));
 const tempHome = path.join(tempRoot, "home");
-const distOutput = path.join(tempRoot, "dist", "PrimeFlow");
+const distOutput = path.join(tempRoot, "dist", "Keystone");
 
 function sharedRuntimeRoot(home) {
-  return path.join(home, ".primeflow", "runtime", "PrimeFlow");
+  return path.join(home, ".keystone", "runtime", "Keystone");
 }
 
 function legacySharedRuntimeRoot(home) {
-  return path.join(home, ".agents", "skills", "PrimeFlow");
+  return path.join(home, ".agents", "skills", "Keystone");
 }
 
 function publicSkillPath(home, alias) {
@@ -78,14 +78,14 @@ try {
   assert.match(doctorOutput, /Shared runtime path/);
   assert.match(doctorOutput, /Next steps:/);
 
-  assert.equal(manifest.agentFacing.recommendedByIntent.find((item) => item.intent === "unknown-start")?.skill, "pf-help");
-  assert.equal(manifest.agentFacing.recommendedByIntent.find((item) => item.intent === "formal-routing")?.skill, "pf-orchestrate");
-  assert.deepEqual(manifest.agentFacing.menuOrder.primaryEntry, ["pf-help", "pf-orchestrate", "pf-handoff"]);
+  assert.equal(manifest.agentFacing.recommendedByIntent.find((item) => item.intent === "unknown-start")?.skill, "ks-help");
+  assert.equal(manifest.agentFacing.recommendedByIntent.find((item) => item.intent === "formal-routing")?.skill, "ks-orchestrate");
+  assert.deepEqual(manifest.agentFacing.menuOrder.primaryEntry, ["ks-help", "ks-orchestrate", "ks-handoff"]);
   assert.equal(manifest.agentFacing.presentationDefaults.claude.preferredInvocationStyle, "slash-command");
   assert.equal(manifest.agentFacing.presentationDefaults.codex.preferredInvocationStyle, "slash-command");
   assert.equal(manifest.agentFacing.presentationDefaults.gemini.preferredInvocationStyle, "slash-command");
-  assert.equal(manifest.skills.find((skill) => skill.name === "pf-help")?.class_priority, 10);
-  assert.equal(manifest.skills.find((skill) => skill.name === "pf-knowledge")?.class_priority, 50);
+  assert.equal(manifest.skills.find((skill) => skill.name === "ks-help")?.class_priority, 10);
+  assert.equal(manifest.skills.find((skill) => skill.name === "ks-knowledge")?.class_priority, 50);
   assert.deepEqual(manifest.agentFacing.presentationDefaults.claude.highlightSections, ["primaryEntry", "highFrequency", "closeout"]);
   assert.deepEqual(manifest.agentFacing.presentationDefaults.codex.highlightSections, ["primaryEntry", "highFrequency", "mainline"]);
 
@@ -94,7 +94,7 @@ try {
   const doctorAlternateHomeOutput = run(["doctor", "--home", doctorHome]);
   assert.match(doctorAlternateHomeOutput, new RegExp(`Agent home: ${doctorHome.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
   assert.match(doctorAlternateHomeOutput, /Detected agent targets: codex/);
-  assert.match(doctorAlternateHomeOutput, /Run `\.\/primeflow install` to install PrimeFlow into codex\./);
+  assert.match(doctorAlternateHomeOutput, /Run `\.\/keystone install` to install Keystone into codex\./);
 
   const scaffoldListOutput = run(["scaffold", "list"]);
   assert.match(scaffoldListOutput, /Available templates:/);
@@ -131,7 +131,7 @@ try {
 
   const dryRunOutput = run(["install", "--dry-run", "--home", tempHome, "--agent", "claude"]);
   assert.match(dryRunOutput, /Dry run complete/);
-  assert.ok(!fs.existsSync(path.join(tempHome, ".claude", "skills", "PrimeFlow")));
+  assert.ok(!fs.existsSync(path.join(tempHome, ".claude", "skills", "Keystone")));
 
   const missingHostOutput = runFail(["install", "--home", tempHome]);
   assert.match(missingHostOutput, /No supported agent target detected/);
@@ -142,12 +142,12 @@ try {
   const autoClaudeInstallOutput = run(["install", "--home", autoClaudeHome]);
   assert.match(autoClaudeInstallOutput, /Agent targets: claude/);
   assert.match(autoClaudeInstallOutput, /Auto-detected agent target: claude/);
-  assert.ok(fs.existsSync(path.join(sharedRuntimeRoot(autoClaudeHome), "primeflow.manifest.json")));
+  assert.ok(fs.existsSync(path.join(sharedRuntimeRoot(autoClaudeHome), "keystone.manifest.json")));
   assert.ok(
-    fs.existsSync(path.join(autoClaudeHome, ".claude", "skills", "PrimeFlow", "primeflow.manifest.json")),
+    fs.existsSync(path.join(autoClaudeHome, ".claude", "skills", "Keystone", "keystone.manifest.json")),
     "auto-detected Claude install should succeed"
   );
-  assert.ok(fs.lstatSync(path.join(autoClaudeHome, ".claude", "skills", "PrimeFlow")).isSymbolicLink());
+  assert.ok(fs.lstatSync(path.join(autoClaudeHome, ".claude", "skills", "Keystone")).isSymbolicLink());
 
   const ambiguousHome = path.join(tempRoot, "ambiguous-home");
   fs.mkdirSync(path.join(ambiguousHome, ".claude"), { recursive: true });
@@ -167,26 +167,26 @@ try {
   assert.match(customDistFail, /Refusing to clean non-empty dist output without --force-clean/);
   assert.ok(fs.existsSync(path.join(customDistOutput, "keep.txt")), "custom dist output should stay intact without --force-clean");
   const customDistSuccess = run(["dist", "build", "--output", customDistOutput, "--force-clean"]);
-  assert.match(customDistSuccess, /PrimeFlow Dist Build/);
+  assert.match(customDistSuccess, /Keystone Dist Build/);
   assert.ok(fs.existsSync(path.join(customDistOutput, "release.json")), "forced dist build should produce release metadata");
   assert.ok(!fs.existsSync(path.join(customDistOutput, "keep.txt")), "forced dist build should replace existing output");
 
   const distOutputText = run(["dist", "build", "--output", distOutput]);
-  assert.match(distOutputText, /PrimeFlow Dist Build/);
+  assert.match(distOutputText, /Keystone Dist Build/);
   assert.ok(fs.existsSync(path.join(distOutput, "release.json")), "release metadata should be created");
 
   const installOutput = run(["install", "--home", tempHome, "--agent", "claude"]);
   assert.match(installOutput, /Install summary/);
-  assert.match(installOutput, /Use in claude: Use \/pf-help when you do not know where to start, or \/pf-orchestrate when you want formal routing\./);
-  const claudeInstall = path.join(tempHome, ".claude", "skills", "PrimeFlow");
+  assert.match(installOutput, /Use in claude: Use \/ks-help when you do not know where to start, or \/ks-orchestrate when you want formal routing\./);
+  const claudeInstall = path.join(tempHome, ".claude", "skills", "Keystone");
   const claudeRuntime = sharedRuntimeRoot(tempHome);
-  assert.ok(fs.existsSync(path.join(claudeRuntime, "primeflow.manifest.json")), "shared runtime should be installed");
+  assert.ok(fs.existsSync(path.join(claudeRuntime, "keystone.manifest.json")), "shared runtime should be installed");
   assert.ok(!fs.existsSync(legacySharedRuntimeRoot(tempHome)), "legacy shared runtime should be removed");
   assert.ok(fs.lstatSync(claudeInstall).isSymbolicLink(), "Claude install should be a symlink into the shared runtime");
   assert.equal(fs.realpathSync(claudeInstall), fs.realpathSync(claudeRuntime), "Claude symlink should point at the shared runtime");
-  assert.ok(fs.existsSync(path.join(claudeInstall, "primeflow.manifest.json")), "manifest should be installed");
-  assert.ok(fs.existsSync(publicSkillPath(tempHome, "pf-help")), "public pf-help skill should be installed");
-  const publicHelpContent = fs.readFileSync(publicSkillPath(tempHome, "pf-help"), "utf8");
+  assert.ok(fs.existsSync(path.join(claudeInstall, "keystone.manifest.json")), "manifest should be installed");
+  assert.ok(fs.existsSync(publicSkillPath(tempHome, "ks-help")), "public ks-help skill should be installed");
+  const publicHelpContent = fs.readFileSync(publicSkillPath(tempHome, "ks-help"), "utf8");
   assert.match(publicHelpContent, /^# Help$/m);
   assert.doesNotMatch(publicHelpContent, /public agent-installed wrapper/);
   assert.match(
@@ -194,7 +194,7 @@ try {
     new RegExp(escapeRegex(`${claudeRuntime}/docs/quickstart.md`))
   );
   assert.doesNotMatch(publicHelpContent, /`docs\/quickstart\.md`/);
-  const publicHandoffContent = fs.readFileSync(publicSkillPath(tempHome, "pf-handoff"), "utf8");
+  const publicHandoffContent = fs.readFileSync(publicSkillPath(tempHome, "ks-handoff"), "utf8");
   assert.match(
     publicHandoffContent,
     new RegExp(escapeRegex(`${claudeRuntime}/orchestration/handoff/scripts/handoff_file.sh`))
@@ -204,7 +204,7 @@ try {
     new RegExp(escapeRegex(`${claudeRuntime}/orchestration/handoff/references/handoff-template.md`))
   );
   assert.doesNotMatch(publicHandoffContent, /`references\/handoff-template\.md`/);
-  const publicOrchestrateContent = fs.readFileSync(publicSkillPath(tempHome, "pf-orchestrate"), "utf8");
+  const publicOrchestrateContent = fs.readFileSync(publicSkillPath(tempHome, "ks-orchestrate"), "utf8");
   assert.match(
     publicOrchestrateContent,
     new RegExp(escapeRegex(`${claudeRuntime}/orchestration/handoff/SKILL.md`))
@@ -220,17 +220,17 @@ try {
   }
 
   fs.rmSync(claudeInstall, { recursive: true, force: true });
-  fs.symlinkSync(path.join(tempRoot, "missing-primeflow-target"), claudeInstall, "dir");
+  fs.symlinkSync(path.join(tempRoot, "missing-keystone-target"), claudeInstall, "dir");
   const danglingSymlinkInstallOutput = run(["install", "--home", tempHome, "--agent", "claude"]);
   assert.match(danglingSymlinkInstallOutput, /Install summary/);
   assert.ok(fs.lstatSync(claudeInstall).isSymbolicLink(), "dangling symlink install should be replaced by a shared-runtime symlink");
   assert.ok(
-    fs.existsSync(path.join(claudeInstall, "primeflow.manifest.json")),
+    fs.existsSync(path.join(claudeInstall, "keystone.manifest.json")),
     "install should succeed when replacing a dangling install symlink"
   );
 
-  const staleAlias = "pf-stale";
-  const claudeManifestPath = path.join(claudeInstall, "primeflow.manifest.json");
+  const staleAlias = "ks-stale";
+  const claudeManifestPath = path.join(claudeInstall, "keystone.manifest.json");
   const claudeInstalledManifest = JSON.parse(fs.readFileSync(claudeManifestPath, "utf8"));
   claudeInstalledManifest.skills.push({ alias: staleAlias, name: "stale-skill", entry: manifest.skills[0].entry });
   fs.writeFileSync(claudeManifestPath, `${JSON.stringify(claudeInstalledManifest, null, 2)}\n`, "utf8");
@@ -242,21 +242,21 @@ try {
   const codexHome = path.join(tempRoot, "codex-home");
   fs.mkdirSync(path.join(codexHome, ".codex"), { recursive: true });
   const codexInstallOutput = run(["install", "--home", codexHome, "--agent", "codex"]);
-  assert.match(codexInstallOutput, /Use in codex: Restart Codex, then start with \/pf-help or \/pf-orchestrate/);
-  assert.ok(fs.existsSync(publicSkillPath(codexHome, "pf-help")));
+  assert.match(codexInstallOutput, /Use in codex: Restart Codex, then start with \/ks-help or \/ks-orchestrate/);
+  assert.ok(fs.existsSync(publicSkillPath(codexHome, "ks-help")));
   assert.ok(!fs.existsSync(legacySharedRuntimeRoot(codexHome)));
-  assert.ok(!fs.existsSync(path.join(codexHome, ".codex", "skills", "PrimeFlow")));
-  const codexHelpContent = fs.readFileSync(publicSkillPath(codexHome, "pf-help"), "utf8");
+  assert.ok(!fs.existsSync(path.join(codexHome, ".codex", "skills", "Keystone")));
+  const codexHelpContent = fs.readFileSync(publicSkillPath(codexHome, "ks-help"), "utf8");
   assert.match(codexHelpContent, /^# Help$/m);
   assert.doesNotMatch(codexHelpContent, /public agent-installed wrapper/);
 
   const geminiHome = path.join(tempRoot, "gemini-home");
   fs.mkdirSync(path.join(geminiHome, ".gemini"), { recursive: true });
   const geminiInstallOutput = run(["install", "--home", geminiHome, "--agent", "gemini"]);
-  assert.match(geminiInstallOutput, /Use in gemini: Restart Gemini, then start with \/pf-help or \/pf-orchestrate/);
-  assert.ok(fs.existsSync(publicSkillPath(geminiHome, "pf-help")));
+  assert.match(geminiInstallOutput, /Use in gemini: Restart Gemini, then start with \/ks-help or \/ks-orchestrate/);
+  assert.ok(fs.existsSync(publicSkillPath(geminiHome, "ks-help")));
   assert.ok(!fs.existsSync(legacySharedRuntimeRoot(geminiHome)));
-  assert.ok(!fs.existsSync(path.join(geminiHome, ".gemini", "skills", "PrimeFlow")));
+  assert.ok(!fs.existsSync(path.join(geminiHome, ".gemini", "skills", "Keystone")));
 
   const rollbackSentinel = path.join(claudeInstall, "rollback-sentinel.txt");
   fs.writeFileSync(rollbackSentinel, "keep", "utf8");
@@ -292,27 +292,27 @@ try {
   fs.mkdirSync(path.join(installScriptHome, ".codex"), { recursive: true });
   const installScriptSuccess = runInstallScript([], {
     HOME: installScriptHome,
-    PRIMEFLOW_INSTALL_REPO_URL: workspaceRoot
+    KEYSTONE_INSTALL_REPO_URL: workspaceRoot
   });
   assert.equal(installScriptSuccess.status, 0, "install.sh should succeed against a local repository source");
-  assert.match(installScriptSuccess.stdout, /PrimeFlow installed successfully\./);
+  assert.match(installScriptSuccess.stdout, /Keystone installed successfully\./);
   assert.ok(
-    fs.existsSync(path.join(sharedRuntimeRoot(installScriptHome), "primeflow.manifest.json")),
+    fs.existsSync(path.join(sharedRuntimeRoot(installScriptHome), "keystone.manifest.json")),
     "install.sh should install the shared runtime on success"
   );
   assert.ok(
-    fs.existsSync(publicSkillPath(installScriptHome, "pf-help")),
+    fs.existsSync(publicSkillPath(installScriptHome, "ks-help")),
     "install.sh should install public skills for the detected host"
   );
   assert.ok(
-    !fs.existsSync(path.join(installScriptHome, ".claude", "skills", "PrimeFlow")),
+    !fs.existsSync(path.join(installScriptHome, ".claude", "skills", "Keystone")),
     "install.sh should not force-install into unrelated hosts when only one host is detected"
   );
 
   const validateOutput = run(["state", "validate"]);
   assert.match(validateOutput, /state\.json is valid/);
 
-  process.stdout.write("PrimeFlow smoke test passed\n");
+  process.stdout.write("Keystone smoke test passed\n");
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }

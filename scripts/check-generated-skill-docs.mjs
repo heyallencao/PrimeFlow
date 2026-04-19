@@ -8,9 +8,9 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const cliPath = path.join(workspaceRoot, "bin", "primeflow.mjs");
-const manifest = JSON.parse(fs.readFileSync(path.join(workspaceRoot, "primeflow.manifest.json"), "utf8"));
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "primeflow-generated-skills-"));
+const cliPath = path.join(workspaceRoot, "bin", "keystone.mjs");
+const manifest = JSON.parse(fs.readFileSync(path.join(workspaceRoot, "keystone.manifest.json"), "utf8"));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "keystone-generated-skills-"));
 const generatedRoot = path.join(tempRoot, "skills");
 const committedRoot = path.join(workspaceRoot, ".agents", "skills");
 

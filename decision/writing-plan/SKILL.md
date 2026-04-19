@@ -1,5 +1,5 @@
 ---
-name: pf-writing-plan
+name: ks-writing-plan
 description: "Use this when direction is already clear and the next job is to compress it into an executable block with scope, done criteria, and routing."
 layer: decision
 owner: writing-plan
@@ -190,7 +190,7 @@ Circuit breaker: if the same block is revised 3 times during planning, stop. Esc
 **next_skill**: [default test-first; implement only for controlled low-risk exceptions]
 ```
 
-Save to `docs/primeflow/plans/YYYYMMDD-[slug].md`.
+Save to `docs/keystone/plans/YYYYMMDD-[slug].md`.
 
 ### Failure Handling Within Procedure
 
@@ -245,26 +245,26 @@ When no plan type cleanly fits:
 ## State Update
 
 ```bash
-mkdir -p docs/primeflow/plans
+mkdir -p docs/keystone/plans
 _BLOCK_TITLE="${BLOCK_TITLE:?set BLOCK_TITLE to current block title}"
 _PLAN_TYPE="${PLAN_TYPE:?set PLAN_TYPE to full-plan|delta-plan|execution-card}"
 _RISK_LEVEL="${RISK_LEVEL:?set RISK_LEVEL to low|medium|high}"
 _NEXT_SKILL="${NEXT_SKILL:?set NEXT_SKILL to test-first|implement}"
 _QA_REQUIRED="${QA_REQUIRED:?set QA_REQUIRED to true|false}"
 _PLAN_SLUG=$(printf '%s' "$_BLOCK_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -d '.,!?')
-_PLAN_PATH="docs/primeflow/plans/$(date +%Y%m%d)-$_PLAN_SLUG.md"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_PLAN_PATH="docs/keystone/plans/$(date +%Y%m%d)-$_PLAN_SLUG.md"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 
 [ -f "$_PLAN_PATH" ] || { echo "plan_document not found: $_PLAN_PATH"; exit 1; }
 
-$_PF_CLI state set current_stage "writing-plan" >/dev/null
-$_PF_CLI state set current_block "$_BLOCK_TITLE" >/dev/null
-$_PF_CLI state set last_decision "block-defined" >/dev/null
-$_PF_CLI state set risk_level "$_RISK_LEVEL" >/dev/null
-$_PF_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
-$_PF_CLI state set artifacts.plan_document "$_PLAN_PATH" >/dev/null
-$_PF_CLI state set artifacts.plan_type "$_PLAN_TYPE" >/dev/null
-$_PF_CLI state set artifacts.next_skill_hint "$_NEXT_SKILL" >/dev/null
+$_KS_CLI state set current_stage "writing-plan" >/dev/null
+$_KS_CLI state set current_block "$_BLOCK_TITLE" >/dev/null
+$_KS_CLI state set last_decision "block-defined" >/dev/null
+$_KS_CLI state set risk_level "$_RISK_LEVEL" >/dev/null
+$_KS_CLI state set qa_required "$_QA_REQUIRED" >/dev/null
+$_KS_CLI state set artifacts.plan_document "$_PLAN_PATH" >/dev/null
+$_KS_CLI state set artifacts.plan_type "$_PLAN_TYPE" >/dev/null
+$_KS_CLI state set artifacts.next_skill_hint "$_NEXT_SKILL" >/dev/null
 
 case "$_NEXT_SKILL" in
   implement)
@@ -286,15 +286,15 @@ case "$_NEXT_SKILL" in
     exit 1
     ;;
 esac
-$_PF_CLI state set exit_code "$_EXIT_CODE" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
+$_KS_CLI state set exit_code "$_EXIT_CODE" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"writing-plan\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"block-defined\",\"confidence\":0.85,\"risk_level\":\"$_RISK_LEVEL\",\"block_name\":\"$_BLOCK_TITLE\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"writing-plan\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"block-defined\",\"confidence\":0.85,\"risk_level\":\"$_RISK_LEVEL\",\"block_name\":\"$_BLOCK_TITLE\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

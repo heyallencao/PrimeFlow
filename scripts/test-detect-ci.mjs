@@ -8,7 +8,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const cliPath = path.join(workspaceRoot, "bin", "primeflow.mjs");
+const cliPath = path.join(workspaceRoot, "bin", "keystone.mjs");
 
 function runDetectCi(projectRoot) {
   const result = spawnSync(process.execPath, [cliPath, "detect-ci", "--project-root", projectRoot], {
@@ -23,7 +23,7 @@ function runDetectCi(projectRoot) {
 
 // Scenario 1: GitLab CI detected
 {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pf-detect-gitlab-"));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ks-detect-gitlab-"));
   try {
     // Create .gitlab-ci.yml
     fs.writeFileSync(path.join(tmpDir, ".gitlab-ci.yml"), `
@@ -41,7 +41,7 @@ test:
 
 // Scenario 2: GitLab CI test_cmd parsed
 {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pf-detect-gitlab-cmd-"));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ks-detect-gitlab-cmd-"));
   try {
     fs.writeFileSync(path.join(tmpDir, ".gitlab-ci.yml"), `
 test:
@@ -60,7 +60,7 @@ test:
 
 // Scenario 3: GitHub Actions beats GitLab CI
 {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pf-detect-gh-over-gl-"));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ks-detect-gh-over-gl-"));
   try {
     fs.mkdirSync(path.join(tmpDir, ".github", "workflows"), { recursive: true });
     fs.writeFileSync(path.join(tmpDir, ".github", "workflows", "ci.yml"), `
@@ -85,7 +85,7 @@ test:
 
 // Scenario 4: GitLab CI beats Jenkins
 {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pf-detect-gl-over-jk-"));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ks-detect-gl-over-jk-"));
   try {
     fs.writeFileSync(path.join(tmpDir, ".gitlab-ci.yml"), `
 test:

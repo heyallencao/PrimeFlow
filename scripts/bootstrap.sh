@@ -82,7 +82,7 @@ optional_missing=()
 
 try_load_nvm
 
-section "PrimeFlow Bootstrap"
+section "Keystone Bootstrap"
 say "Platform: $platform"
 
 if has_cmd git; then
@@ -100,7 +100,7 @@ else
 fi
 
 say "[ok] handoff id generation uses bash built-ins"
-say "[info] preferred runtime is primeflow CLI"
+say "[info] preferred runtime is keystone CLI"
 
 if has_playwright; then
   say "[ok] playwright"
@@ -133,4 +133,4 @@ fi
 section "Next Step"
 say "If core is ready, start with:"
 say "  cd <project-root>"
-say "  ./primeflow doctor"
+say "  ./keystone doctor"

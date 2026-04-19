@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${PRIMEFLOW_INSTALL_REPO_URL:-https://github.com/heyallencao/PrimeFlow.git}"
-INSTALL_DIR="${HOME}/.primeflow/runtime/PrimeFlow"
-LEGACY_INSTALL_DIR="${HOME}/.agents/skills/PrimeFlow"
-STAGE_DIR="${HOME}/.primeflow/runtime/.PrimeFlow.clone.$$"
-FORCE_OVERWRITE="${PRIMEFLOW_INSTALL_FORCE:-0}"
+REPO_URL="${KEYSTONE_INSTALL_REPO_URL:-https://github.com/heyallencao/Keystone.git}"
+INSTALL_DIR="${HOME}/.keystone/runtime/Keystone"
+LEGACY_INSTALL_DIR="${HOME}/.agents/skills/Keystone"
+STAGE_DIR="${HOME}/.keystone/runtime/.Keystone.clone.$$"
+FORCE_OVERWRITE="${KEYSTONE_INSTALL_FORCE:-0}"
 INSTALL_ARGS=()
 
 say() { printf '%s\n' "$1"; }
@@ -38,7 +38,7 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-say "PrimeFlow installer"
+say "Keystone installer"
 say "========================================"
 
 # Check Node.js
@@ -63,10 +63,10 @@ fi
 if [ -d "$INSTALL_DIR" ] || [ -d "$LEGACY_INSTALL_DIR" ]; then
   say ""
   if [ -d "$INSTALL_DIR" ]; then
-    say "WARNING: existing PrimeFlow installation detected: $INSTALL_DIR"
+    say "WARNING: existing Keystone installation detected: $INSTALL_DIR"
   fi
   if [ -d "$LEGACY_INSTALL_DIR" ] && [ "$LEGACY_INSTALL_DIR" != "$INSTALL_DIR" ]; then
-    say "WARNING: legacy PrimeFlow installation detected: $LEGACY_INSTALL_DIR"
+    say "WARNING: legacy Keystone installation detected: $LEGACY_INSTALL_DIR"
   fi
   if [ "$FORCE_OVERWRITE" = "1" ]; then
     say "--force detected. Existing installation will be replaced."
@@ -77,9 +77,9 @@ if [ -d "$INSTALL_DIR" ] || [ -d "$LEGACY_INSTALL_DIR" ]; then
   else
     say "This is a non-interactive install, so overwrite confirmation cannot be read."
     say "To overwrite, run again with:"
-    say "  curl -fsSL https://raw.githubusercontent.com/heyallencao/PrimeFlow/main/scripts/install.sh | bash -s -- --force"
+    say "  curl -fsSL https://raw.githubusercontent.com/heyallencao/Keystone/main/scripts/install.sh | bash -s -- --force"
     say "Or set the environment variable:"
-    say "  PRIMEFLOW_INSTALL_FORCE=1"
+    say "  KEYSTONE_INSTALL_FORCE=1"
     exit 1
   fi
   case "$reply" in
@@ -89,23 +89,23 @@ if [ -d "$INSTALL_DIR" ] || [ -d "$LEGACY_INSTALL_DIR" ]; then
 fi
 
 say ""
-say "Cloning PrimeFlow..."
+say "Cloning Keystone..."
 mkdir -p "$(dirname "$INSTALL_DIR")"
 rm -rf "$STAGE_DIR"
 git clone --single-branch --depth 1 "$REPO_URL" "$STAGE_DIR"
 
 say ""
-say "Running PrimeFlow install..."
+say "Running Keystone install..."
 cd "$STAGE_DIR"
 if [ "${#INSTALL_ARGS[@]}" -gt 0 ]; then
-  node ./bin/primeflow.mjs install "${INSTALL_ARGS[@]}"
+  node ./bin/keystone.mjs install "${INSTALL_ARGS[@]}"
 else
-  node ./bin/primeflow.mjs install
+  node ./bin/keystone.mjs install
 fi
 
 say ""
 say "========================================"
-say "PrimeFlow installed successfully."
+say "Keystone installed successfully."
 say ""
 say "See the install summary above for host-specific next steps."
 say "For more details, read README.md and docs/installation.md."

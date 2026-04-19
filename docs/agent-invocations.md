@@ -1,8 +1,8 @@
-# PrimeFlow Agent Invocations
+# Keystone Agent Invocations
 
 This document answers one question:
 
-> How should users call the same PrimeFlow skill in different hosts?
+> How should users call the same Keystone skill in different hosts?
 
 It does not define skill semantics. Each `SKILL.md` does that.
 
@@ -14,7 +14,7 @@ Across hosts, keep these stable:
 - the skill boundary
 - the mainline meaning of the next step
 
-Under the current frozen contract, all three hosts use `/pf-*`.
+Under the current frozen contract, all three hosts use `/ks-*`.
 
 If a host wants menus or first-run recommendations, it should read:
 
@@ -30,120 +30,120 @@ Do not reinvent a separate host-only intent-to-skill map.
 
 The current primary entry trio is:
 
-- `pf-help`
+- `ks-help`
   when the user does not know where to start
-- `pf-orchestrate`
-  when PrimeFlow should formally determine entry mode and the next step
-- `pf-handoff`
+- `ks-orchestrate`
+  when Keystone should formally determine entry mode and the next step
+- `ks-handoff`
   when the user wants to pause, restore, or switch sessions
 
 Those distinctions should stay explicit:
 
-- `pf-help` = recommend an entry
-- `pf-orchestrate` = route formally
-- `pf-handoff` = freeze or restore execution context
+- `ks-help` = recommend an entry
+- `ks-orchestrate` = route formally
+- `ks-handoff` = freeze or restore execution context
 
 Do not merge them into one vague super-entry in any host.
 
 ## Claude
 
-Claude currently fits `/pf-*` directly.
+Claude currently fits `/ks-*` directly.
 
 Examples:
 
 ```text
-/pf-help
-/pf-orchestrate
-/pf-writing-plan
-/pf-review
+/ks-help
+/ks-orchestrate
+/ks-writing-plan
+/ks-review
 ```
 
 ```text
-/pf-help
-I want to add a notification toggle to an existing settings page, but I am not sure which PrimeFlow skill should handle it first.
+/ks-help
+I want to add a notification toggle to an existing settings page, but I am not sure which Keystone skill should handle it first.
 ```
 
 ```text
-/pf-bug-triage
+/ks-bug-triage
 Production payment callbacks are failing intermittently. Classify whether this looks like a spec problem, an implementation bug, or a rollback candidate.
 ```
 
 ## Codex
 
-Codex also uses `/pf-*` directly.
+Codex also uses `/ks-*` directly.
 
 Examples:
 
 ```text
-/pf-help
+/ks-help
 ```
 
 ```text
-/pf-brief Compress the background below into a one-page brief.
+/ks-brief Compress the background below into a one-page brief.
 ```
 
 ```text
-/pf-pr-prep Turn this round of work into reviewer-ready PR context.
+/ks-pr-prep Turn this round of work into reviewer-ready PR context.
 ```
 
 Installation notes:
 
-- the shared runtime lives in `~/.primeflow/runtime/PrimeFlow`
-- Codex reads `~/.agents/skills/pf-*/SKILL.md` directly
-- PrimeFlow does not mount a separate `~/.codex/skills/PrimeFlow` skill tree, which avoids duplicate entries
+- the shared runtime lives in `~/.keystone/runtime/Keystone`
+- Codex reads `~/.agents/skills/ks-*/SKILL.md` directly
+- Keystone does not mount a separate `~/.codex/skills/Keystone` skill tree, which avoids duplicate entries
 - restart Codex after installation so it rescans skills
 
 ## Gemini
 
-Gemini also uses `/pf-*` directly.
+Gemini also uses `/ks-*` directly.
 
 Examples:
 
 ```text
-/pf-orchestrate Determine which entry mode this task should use.
+/ks-orchestrate Determine which entry mode this task should use.
 ```
 
 ```text
-/pf-docs-writer Compress the result of this round into a maintainer note.
+/ks-docs-writer Compress the result of this round into a maintainer note.
 ```
 
 ## Cross-Host Skill Reference
 
 ### `help`
 
-- Claude: `/pf-help`
-- Codex: `/pf-help`
-- Gemini: `/pf-help`
+- Claude: `/ks-help`
+- Codex: `/ks-help`
+- Gemini: `/ks-help`
 
 ### `brief`
 
-- Claude: `/pf-brief`
-- Codex: `/pf-brief`
-- Gemini: `/pf-brief`
+- Claude: `/ks-brief`
+- Codex: `/ks-brief`
+- Gemini: `/ks-brief`
 
 ### `bug-triage`
 
-- Claude: `/pf-bug-triage`
-- Codex: `/pf-bug-triage`
-- Gemini: `/pf-bug-triage`
+- Claude: `/ks-bug-triage`
+- Codex: `/ks-bug-triage`
+- Gemini: `/ks-bug-triage`
 
 ### `pr-prep`
 
-- Claude: `/pf-pr-prep`
-- Codex: `/pf-pr-prep`
-- Gemini: `/pf-pr-prep`
+- Claude: `/ks-pr-prep`
+- Codex: `/ks-pr-prep`
+- Gemini: `/ks-pr-prep`
 
 ### `docs-writer`
 
-- Claude: `/pf-docs-writer`
-- Codex: `/pf-docs-writer`
-- Gemini: `/pf-docs-writer`
+- Claude: `/ks-docs-writer`
+- Codex: `/ks-docs-writer`
+- Gemini: `/ks-docs-writer`
 
 ### `orchestrate`
 
-- Claude: `/pf-orchestrate`
-- Codex: `/pf-orchestrate`
-- Gemini: `/pf-orchestrate`
+- Claude: `/ks-orchestrate`
+- Codex: `/ks-orchestrate`
+- Gemini: `/ks-orchestrate`
 
 ## Practices To Avoid
 
@@ -157,7 +157,7 @@ Examples:
 
 Whenever a new high-frequency direct-entry skill is added, update:
 
-- `primeflow.manifest.json`
+- `keystone.manifest.json`
 - `README.md`
 - `docs/agent-implementation.md`
 - this document

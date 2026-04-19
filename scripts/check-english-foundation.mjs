@@ -23,31 +23,31 @@ function assertEnglishFirst(relativePath, requiredPatterns = []) {
 const canonicalDocs = [
   {
     path: "README.md",
-    patterns: [/^# PrimeFlow$/m, /PrimeFlow is/i, /Quick Start/i, /Documentation/i]
+    patterns: [/^# Keystone$/m, /Keystone is/i, /Quick Start/i, /Documentation/i]
   },
   {
     path: "docs/README.codex.md",
-    patterns: [/^# PrimeFlow for Codex$/m, /Quick Install/i, /First Run/i, /Usage/i]
+    patterns: [/^# Keystone for Codex$/m, /Quick Install/i, /First Run/i, /Usage/i]
   },
   {
     path: "docs/quickstart.md",
-    patterns: [/^# PrimeFlow in 5 Minutes$/m, /Step 1/i, /Step 5/i, /fresh evidence/i]
+    patterns: [/^# Keystone in 5 Minutes$/m, /Step 1/i, /Step 5/i, /fresh evidence/i]
   },
   {
     path: "docs/language-policy.md",
-    patterns: [/^# PrimeFlow Language Policy$/m, /English is the canonical/i, /Chinese/i, /runtime skills/i]
+    patterns: [/^# Keystone Language Policy$/m, /English is the canonical/i, /Chinese/i, /runtime skills/i]
   },
   {
     path: "docs/installation.md",
-    patterns: [/^# PrimeFlow Installation Guide$/m, /Install PrimeFlow/i, /After Installation/i, /Common Commands/i]
+    patterns: [/^# Keystone Installation Guide$/m, /Install Keystone/i, /After Installation/i, /Common Commands/i]
   },
   {
     path: "CONTRIBUTING.md",
-    patterns: [/^# Contributing to PrimeFlow$/m, /How to Contribute/i, /Verification/i]
+    patterns: [/^# Contributing to Keystone$/m, /How to Contribute/i, /Verification/i]
   },
   {
     path: "CODE_OF_CONDUCT.md",
-    patterns: [/^# PrimeFlow Code of Conduct$/m, /Expected Behavior/i, /Unacceptable Behavior/i]
+    patterns: [/^# Keystone Code of Conduct$/m, /Expected Behavior/i, /Unacceptable Behavior/i]
   },
   {
     path: "SECURITY.md",
@@ -55,82 +55,82 @@ const canonicalDocs = [
   },
   {
     path: "RELEASING.md",
-    patterns: [/^# Releasing PrimeFlow$/m, /Current Release Model/i, /Release Checklist/i]
+    patterns: [/^# Releasing Keystone$/m, /Current Release Model/i, /Release Checklist/i]
   },
   {
     path: "FRAMEWORK.md",
-    patterns: [/^# PrimeFlow Framework$/m, /Core Principles/i, /Decision Contract/i]
+    patterns: [/^# Keystone Framework$/m, /Core Principles/i, /Decision Contract/i]
   },
   {
     path: "SYSTEM.md",
-    patterns: [/^# PrimeFlow System Architecture$/m, /Layered Architecture/i, /Main Workflow/i]
+    patterns: [/^# Keystone System Architecture$/m, /Layered Architecture/i, /Main Workflow/i]
   },
   {
     path: "STATE.md",
-    patterns: [/^# PrimeFlow State Management$/m, /State File Location/i, /Handoff Protocol/i]
+    patterns: [/^# Keystone State Management$/m, /State File Location/i, /Handoff Protocol/i]
   },
   {
     path: "docs/golden-paths.md",
-    patterns: [/^# PrimeFlow Golden Paths$/m, /New Feature Path/i, /Session Switch Path/i]
+    patterns: [/^# Keystone Golden Paths$/m, /New Feature Path/i, /Session Switch Path/i]
   },
   {
     path: "docs/walkthrough.md",
-    patterns: [/^# PrimeFlow Walkthrough$/m, /Example Task/i, /orchestrate -> roundtable/i]
+    patterns: [/^# Keystone Walkthrough$/m, /Example Task/i, /orchestrate -> roundtable/i]
   },
   {
     path: "examples/README.md",
-    patterns: [/^# PrimeFlow Examples$/m, /copyable/i, /Claude|Codex|Gemini/i]
+    patterns: [/^# Keystone Examples$/m, /copyable/i, /Claude|Codex|Gemini/i]
   },
   {
     path: "examples/claude.md",
-    patterns: [/^# PrimeFlow on Claude$/m, /\/pf-help/i, /copy and paste/i]
+    patterns: [/^# Keystone on Claude$/m, /\/ks-help/i, /copy and paste/i]
   },
   {
     path: "examples/codex.md",
-    patterns: [/^# PrimeFlow on Codex$/m, /\/pf-help/i, /copy and paste/i]
+    patterns: [/^# Keystone on Codex$/m, /\/ks-help/i, /copy and paste/i]
   },
   {
     path: "examples/gemini.md",
-    patterns: [/^# PrimeFlow on Gemini$/m, /\/pf-help/i, /copy and paste/i]
+    patterns: [/^# Keystone on Gemini$/m, /\/ks-help/i, /copy and paste/i]
   },
   {
     path: "docs/agent-compatibility-matrix.md",
-    patterns: [/^# PrimeFlow Agent Compatibility Matrix$/m, /Claude|Codex|Gemini/i]
+    patterns: [/^# Keystone Agent Compatibility Matrix$/m, /Claude|Codex|Gemini/i]
   },
   {
     path: "docs/agent-implementation.md",
-    patterns: [/^# PrimeFlow Agent Implementation$/m, /semantic consistency/i, /Decision Contract/i]
+    patterns: [/^# Keystone Agent Implementation$/m, /semantic consistency/i, /Decision Contract/i]
   },
   {
     path: "docs/agent-invocations.md",
-    patterns: [/^# PrimeFlow Agent Invocations$/m, /\/pf-help/i, /Claude|Codex|Gemini/i]
+    patterns: [/^# Keystone Agent Invocations$/m, /\/ks-help/i, /Claude|Codex|Gemini/i]
   },
   {
     path: "docs/decision-matrix.md",
-    patterns: [/^# PrimeFlow Decision Matrix$/m, /help-guided/i, /route-\*/i]
+    patterns: [/^# Keystone Decision Matrix$/m, /help-guided/i, /route-\*/i]
   },
   {
     path: "docs/distribution-model.md",
-    patterns: [/^# PrimeFlow Distribution Model$/m, /runtime/i, /manifest/i]
+    patterns: [/^# Keystone Distribution Model$/m, /runtime/i, /manifest/i]
   },
   {
     path: "docs/maintainer.md",
-    patterns: [/^# PrimeFlow Maintainer Guide$/m, /npm run smoke/i, /dist build/i]
+    patterns: [/^# Keystone Maintainer Guide$/m, /npm run smoke/i, /dist build/i]
   },
   {
     path: "docs/team-policy.md",
-    patterns: [/^# PrimeFlow Team Policy$/m, /review/i, /release/i]
+    patterns: [/^# Keystone Team Policy$/m, /review/i, /release/i]
   },
   {
     path: "docs/vnext-roadmap.md",
-    patterns: [/^# PrimeFlow vNext Roadmap$/m, /Phase/i, /Next Steps/i]
+    patterns: [/^# Keystone vNext Roadmap$/m, /Phase/i, /Next Steps/i]
   },
   {
-    path: "primeflow.manifest.json",
-    patterns: [/"name": "PrimeFlow"/, /"summary": "PrimeFlow first-run entry/i, /"entry": "support\/help\/SKILL\.md"/]
+    path: "keystone.manifest.json",
+    patterns: [/"name": "Keystone"/, /"summary": "Keystone first-run entry/i, /"entry": "support\/help\/SKILL\.md"/]
   },
   {
-    path: "bin/primeflow.mjs",
+    path: "bin/keystone.mjs",
     patterns: [/function createHandoff\(/, /Resume at verify/i, /No handoff found/i]
   }
 ];
@@ -221,7 +221,7 @@ const githubTemplates = [
   },
   {
     path: ".github/pull_request_template.md",
-    patterns: [/^## Summary$/m, /Verification/i, /PrimeFlow Stage/i]
+    patterns: [/^## Summary$/m, /Verification/i, /Keystone Stage/i]
   }
 ];
 
@@ -236,7 +236,7 @@ const runtimeArtifacts = [
   },
   {
     path: "scripts/install.sh",
-    patterns: [/PrimeFlow installer/i, /Cloning PrimeFlow/i, /PrimeFlow installed successfully/i]
+    patterns: [/Keystone installer/i, /Cloning Keystone/i, /Keystone installed successfully/i]
   },
   {
     path: "templates/plan.md",

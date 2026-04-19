@@ -1,5 +1,5 @@
 ---
-name: pf-handoff
+name: ks-handoff
 description: "Cross-session handoff skill. Use it when the user explicitly wants to pause, switch sessions, resume prior work, restore a handoff package, or list recent handoffs."
 layer: orchestration
 owner: handoff
@@ -37,12 +37,12 @@ Freezes current working context into a recoverable package so the next session c
 Every handoff package contains two files:
 
 - `handoff.md` — human-readable package with 8 required slots
-- `snapshot.json` — structured snapshot for PrimeFlow state recovery and routing
+- `snapshot.json` — structured snapshot for Keystone state recovery and routing
 
 Structure:
 
 ```text
-.primeflow/handoff/<handoff_id>/
+.keystone/handoff/<handoff_id>/
 ├── handoff.md
 └── snapshot.json
 ```
@@ -75,12 +75,12 @@ Rules: all 8 must have values. If something truly has no value, write `none` or 
 #### Step 1: Create the package
 
 ```bash
-_HANDOFF_DOC=$("./primeflow" handoff create "${_CURRENT_BLOCK:-primeflow-handoff}")
+_HANDOFF_DOC=$("./keystone" handoff create "${_CURRENT_BLOCK:-keystone-handoff}")
 _HANDOFF_DIR=$(dirname "$_HANDOFF_DOC")
 _HANDOFF_ID=$(basename "$_HANDOFF_DIR")
 ```
 
-`create` generates both `handoff.md` and `snapshot.json`, prefilled from `.primeflow/state.json` where possible.
+`create` generates both `handoff.md` and `snapshot.json`, prefilled from `.keystone/state.json` where possible.
 
 #### Step 2: Strengthen the 8 slots
 
@@ -110,7 +110,7 @@ Inspect each slot. Confirm every field contains real content, not empty or vague
 Handoff saved.
 
   ID:   {handoff_id}
-  File: .primeflow/handoff/{handoff_id}/handoff.md
+  File: .keystone/handoff/{handoff_id}/handoff.md
 
   Next session -> handoff in {handoff_id}
 ```
@@ -122,9 +122,9 @@ Handoff saved.
 ```bash
 _HANDOFF_TARGET="${1:-latest}"
 if [ "$_HANDOFF_TARGET" = "latest" ]; then
-  _HANDOFF_DOC=$("./primeflow" handoff latest)
+  _HANDOFF_DOC=$("./keystone" handoff latest)
 else
-  _HANDOFF_DOC=$("./primeflow" handoff resolve "$_HANDOFF_TARGET")
+  _HANDOFF_DOC=$("./keystone" handoff resolve "$_HANDOFF_TARGET")
 fi
 _HANDOFF_DIR=$(dirname "$_HANDOFF_DOC")
 ```
@@ -164,7 +164,7 @@ Sentence template:
 ### Handoff List
 
 ```bash
-"./primeflow" handoff list
+"./keystone" handoff list
 ```
 
 ### Failure Handling Within Procedure
@@ -191,9 +191,9 @@ When `snapshot.json` is missing, empty, or contains invalid JSON:
 ### E2: Target Handoff Not Found
 
 When `handoff in <id>` cannot resolve the target:
-- List available handoffs: `"./primeflow" handoff list`
+- List available handoffs: `"./keystone" handoff list`
 - Report: "Handoff ID [X] not found. Available handoffs: [list]"
-- If no handoffs exist at all, report: "No handoff packages found in .primeflow/handoff/"
+- If no handoffs exist at all, report: "No handoff packages found in .keystone/handoff/"
 - Do NOT fabricate a recovery from memory or chat history
 - Suggest the user create a new session with a fresh brief instead
 
@@ -234,21 +234,21 @@ If any slot fails validation, fix it before saving the handoff.
 ## State Update
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 _HANDOFF_ID="${HANDOFF_ID:-}"
 
 if [ -n "$_HANDOFF_ID" ]; then
-  $_PF_CLI state set last_decision "handoff-saved" >/dev/null 2>&1 || true
-  $_PF_CLI state set artifacts.last_handoff_id "$_HANDOFF_ID" >/dev/null 2>&1 || true
+  $_KS_CLI state set last_decision "handoff-saved" >/dev/null 2>&1 || true
+  $_KS_CLI state set artifacts.last_handoff_id "$_HANDOFF_ID" >/dev/null 2>&1 || true
 else
-  $_PF_CLI state set last_decision "handoff-previewed" >/dev/null 2>&1 || true
+  $_KS_CLI state set last_decision "handoff-previewed" >/dev/null 2>&1 || true
 fi
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"handoff\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"${_HANDOFF_DECISION:-handoff-saved}\",\"handoff_id\":\"${_HANDOFF_ID:-}\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"handoff\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"${_HANDOFF_DECISION:-handoff-saved}\",\"handoff_id\":\"${_HANDOFF_ID:-}\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

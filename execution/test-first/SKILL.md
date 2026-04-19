@@ -1,5 +1,5 @@
 ---
-name: pf-test-first
+name: ks-test-first
 description: "Default behavior-locking stage for the current block. Write failing checks first, then implement. Only controlled low-risk exceptions may skip it."
 layer: execution
 owner: test-first
@@ -222,21 +222,21 @@ When `test-first` was entered despite the block being a controlled exception (ap
 ```bash
 _TEST_CONTRACT_PATH="${TEST_CONTRACT_PATH:?set TEST_CONTRACT_PATH to the actual test contract path}"
 [ -f "$_TEST_CONTRACT_PATH" ] || { echo "test_contract not found: $_TEST_CONTRACT_PATH"; exit 1; }
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 
-$_PF_CLI state set current_stage "test-first" >/dev/null
-$_PF_CLI state set last_decision "test-contract-produced" >/dev/null
-$_PF_CLI state set artifacts.test_contract "$_TEST_CONTRACT_PATH" >/dev/null
-$_PF_CLI state set exit_code "ok" >/dev/null
-$_PF_CLI state set exit_reason "test_contract locked the core done criteria" >/dev/null
-$_PF_CLI state set next_skill "implement" >/dev/null
+$_KS_CLI state set current_stage "test-first" >/dev/null
+$_KS_CLI state set last_decision "test-contract-produced" >/dev/null
+$_KS_CLI state set artifacts.test_contract "$_TEST_CONTRACT_PATH" >/dev/null
+$_KS_CLI state set exit_code "ok" >/dev/null
+$_KS_CLI state set exit_reason "test_contract locked the core done criteria" >/dev/null
+$_KS_CLI state set next_skill "implement" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
 _SCENARIO_COUNT="${SCENARIO_COUNT:-0}"
-echo "{\"skill\":\"test-first\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"test-contract-produced\",\"confidence\":0.9,\"scenario_count\":$_SCENARIO_COUNT}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"test-first\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"test-contract-produced\",\"confidence\":0.9,\"scenario_count\":$_SCENARIO_COUNT}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

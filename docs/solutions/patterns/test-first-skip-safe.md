@@ -8,7 +8,7 @@ date: 2026-04-18
 ---
 
 ## Context
-A task enters pf-implement directly without going through pf-test-first. This is only valid when writing-plan explicitly approved the low-risk exception.
+A task enters ks-implement directly without going through ks-test-first. This is only valid when writing-plan explicitly approved the low-risk exception.
 
 ## Guidance
 Skipping test-first is a controlled exception, not a shortcut. Before approving:

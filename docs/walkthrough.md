@@ -1,10 +1,10 @@
-# PrimeFlow Walkthrough
+# Keystone Walkthrough
 
-This is not the full manual. It is the smallest first run that should make PrimeFlow feel concrete.
+This is not the full manual. It is the smallest first run that should make Keystone feel concrete.
 
 Goals:
 
-- show how PrimeFlow enters real work
+- show how Keystone enters real work
 - show when each major skill should be used
 - avoid making you read all 18 skills upfront
 
@@ -21,12 +21,12 @@ Add a `Continue with GitHub` entry to an existing login page while keeping these
 ## Recommended First Sentence To Your Agent
 
 ```text
-Use PrimeFlow and start from orchestrate. This is a from-scratch feature with a clear goal: add a GitHub OAuth entry to the existing login page. Determine the correct entry mode, then move through the smallest safe loop.
+Use Keystone and start from orchestrate. This is a from-scratch feature with a clear goal: add a GitHub OAuth entry to the existing login page. Determine the correct entry mode, then move through the smallest safe loop.
 ```
 
 ## Default Mainline For Scratch Work
 
-When you are starting a task from scratch, the default PrimeFlow mainline is:
+When you are starting a task from scratch, the default Keystone mainline is:
 
 ```text
 orchestrate -> roundtable -> writing-plan -> test-first -> implement -> verify -> review -> qa? -> ship -> release -> knowledge
@@ -45,7 +45,7 @@ This is a recommended path, not a mandatory chain for every task.
 orchestrate -> roundtable -> writing-plan -> test-first -> implement -> verify -> review
 ```
 
-That path alone is enough to feel PrimeFlow's core contract.
+That path alone is enough to feel Keystone's core contract.
 
 If the task needs production closeout after that:
 
@@ -143,13 +143,13 @@ If you need to pause halfway through, do not leave a vague note like "continue l
 Use:
 
 ```text
-Use PrimeFlow and run handoff out.
+Use Keystone and run handoff out.
 ```
 
 To restore:
 
 ```text
-Use PrimeFlow and run handoff in latest.
+Use Keystone and run handoff in latest.
 ```
 
 `handoff` is worth remembering because it turns AI context from a black box into an explicit recoverable package.

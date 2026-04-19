@@ -1,16 +1,16 @@
 {
-  "name": "primeflow",
+  "name": "keystone",
   "private": true,
   "version": "0.2.0",
-  "description": "Cross-agent workflow skill bundle and agent-native installer for PrimeFlow",
+  "description": "Cross-agent workflow skill bundle and agent-native installer for Keystone",
   "license": "MIT",
-  "homepage": "https://primeflow.pages.dev",
+  "homepage": "https://keystone.pages.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heyallencao/PrimeFlow.git"
+    "url": "git+https://github.com/heyallencao/Keystone.git"
   },
   "bugs": {
-    "url": "https://github.com/heyallencao/PrimeFlow/issues"
+    "url": "https://github.com/heyallencao/Keystone/issues"
   },
   "keywords": [
     "ai-agent",
@@ -23,7 +23,7 @@
   ],
   "type": "module",
   "scripts": {
-    "build:release-stage": "node ./bin/primeflow.mjs dist build --output ./dist/release/PrimeFlow --force-clean",
+    "build:release-stage": "node ./bin/keystone.mjs dist build --output ./dist/release/Keystone --force-clean",
     "smoke": "node ./scripts/smoke-test.mjs",
     "test:english-foundation": "node ./scripts/check-english-foundation.mjs",
     "test:generated-skill-docs": "node ./scripts/check-generated-skill-docs.mjs"
@@ -32,6 +32,6 @@
     "node": ">=18"
   },
   "bin": {
-    "primeflow": "./bin/primeflow.mjs"
+    "keystone": "./bin/keystone.mjs"
   }
 }

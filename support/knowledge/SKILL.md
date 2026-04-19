@@ -1,5 +1,5 @@
 ---
-name: pf-knowledge
+name: ks-knowledge
 description: "Lightweight knowledge compounding system. Retrieve first, write only when it is worth it, and prefer updating existing knowledge over creating more noise."
 layer: support
 owner: knowledge
@@ -29,9 +29,9 @@ Retrieve before write. Skip is a valid outcome. Write only when the insight is n
 Knowledge enters only after release is complete. Do not enter while work continues.
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-_RELEASE_ESCALATE=$($_PF_CLI state get release_escalate 2>/dev/null | tr -d '"')
-_LAST_SKILL=$($_PF_CLI state get last_skill 2>/dev/null | tr -d '"')
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+_RELEASE_ESCALATE=$($_KS_CLI state get release_escalate 2>/dev/null | tr -d '"')
+_LAST_SKILL=$($_KS_CLI state get last_skill 2>/dev/null | tr -d '"')
 echo "Last skill: $_LAST_SKILL | Release escalate: $_RELEASE_ESCALATE"
 ```
 
@@ -57,11 +57,11 @@ Knowledge is worth writing when ALL of these are true:
 Search `docs/solutions/` for overlapping knowledge using the CLI.
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
 _KEYWORDS="${KEYWORDS:?set KEYWORDS to search terms}"
 
 # CLI-powered search with scoring
-$_PF_CLI knowledge search $_KEYWORDS 2>/dev/null || echo "No knowledge artifacts found."
+$_KS_CLI knowledge search $_KEYWORDS 2>/dev/null || echo "No knowledge artifacts found."
 ```
 
 - expected: scored list of candidate files sorted by relevance
@@ -93,7 +93,7 @@ For each candidate, read frontmatter (first 15 lines) and score:
 No artifact written. This is the correct outcome for trivial or obvious work.
 
 ```bash
-$_PF_CLI state set last_decision "knowledge-skip" >/dev/null
+$_KS_CLI state set last_decision "knowledge-skip" >/dev/null
 ```
 
 #### if update
@@ -168,7 +168,7 @@ date: YYYY-MM-DD
 ### Step 6: Discoverability check
 
 ```bash
-$_PF_CLI knowledge check 2>/dev/null || {
+$_KS_CLI knowledge check 2>/dev/null || {
   # Fallback if CLI not available
   if ! grep -q "docs/solutions" AGENTS.md CLAUDE.md 2>/dev/null; then
     echo "GAP: docs/solutions/ is not referenced in AGENTS.md or CLAUDE.md"
@@ -213,9 +213,9 @@ $_PF_CLI knowledge check 2>/dev/null || {
 
 ```bash
 _KNOWLEDGE_DECISION="${KNOWLEDGE_DECISION:?set to knowledge-skip|knowledge-update|knowledge-create}"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set current_stage "knowledge" >/dev/null
-$_PF_CLI state set last_decision "$_KNOWLEDGE_DECISION" >/dev/null
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set current_stage "knowledge" >/dev/null
+$_KS_CLI state set last_decision "$_KNOWLEDGE_DECISION" >/dev/null
 
 case "$_KNOWLEDGE_DECISION" in
   knowledge-skip)
@@ -227,15 +227,15 @@ case "$_KNOWLEDGE_DECISION" in
     _EXIT_REASON="Knowledge archived"
     ;;
 esac
-$_PF_CLI state set exit_code "$_EXIT_CODE" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "" >/dev/null
+$_KS_CLI state set exit_code "$_EXIT_CODE" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"knowledge\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"${_KNOWLEDGE_DECISION:-knowledge-skip}\",\"confidence\":0.9}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"knowledge\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"${_KNOWLEDGE_DECISION:-knowledge-skip}\",\"confidence\":0.9}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

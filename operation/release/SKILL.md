@@ -1,5 +1,5 @@
 ---
-name: pf-release
+name: ks-release
 description: "Use this after ship completes to decide what can be released, what must be disclosed, and what risks or skipped validation must be stated honestly."
 layer: operation
 owner: release
@@ -61,8 +61,8 @@ If ship is still in progress, that is `ship`. If a new critical problem requires
 Read the ship report. Verify the ship outcome.
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-_SHIP_RESULT=$($_PF_CLI state get ship_result 2>/dev/null | tr -d '"')
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+_SHIP_RESULT=$($_KS_CLI state get ship_result 2>/dev/null | tr -d '"')
 echo "Ship result: $_SHIP_RESULT"
 ```
 
@@ -240,19 +240,19 @@ case "$_RELEASE_DECISION" in
     ;;
 esac
 
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set current_stage "release" >/dev/null
-$_PF_CLI state set last_decision "$_RELEASE_DECISION" >/dev/null
-$_PF_CLI state set release_escalate "$_jq_escalate" >/dev/null
-$_PF_CLI state set exit_code "$_exit_code" >/dev/null
-$_PF_CLI state set exit_reason "$_exit_reason" >/dev/null
-$_PF_CLI state set next_skill "$_exit_next" >/dev/null
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set current_stage "release" >/dev/null
+$_KS_CLI state set last_decision "$_RELEASE_DECISION" >/dev/null
+$_KS_CLI state set release_escalate "$_jq_escalate" >/dev/null
+$_KS_CLI state set exit_code "$_exit_code" >/dev/null
+$_KS_CLI state set exit_reason "$_exit_reason" >/dev/null
+$_KS_CLI state set next_skill "$_exit_next" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"release\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_RELEASE_DECISION\",\"confidence\":0.9,\"release_escalate\":$_jq_escalate,\"risks_disclosed\":${RISKS_DISCLOSED:-0}}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"release\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_RELEASE_DECISION\",\"confidence\":0.9,\"release_escalate\":$_jq_escalate,\"risks_disclosed\":${RISKS_DISCLOSED:-0}}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

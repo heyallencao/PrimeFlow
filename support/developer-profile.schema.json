@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "PrimeFlow Developer Profile",
+  "title": "Keystone Developer Profile",
   "description": "Accumulated user preferences across sessions. V1 is observational only.",
   "type": "object",
   "properties": {

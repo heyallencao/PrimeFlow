@@ -1,5 +1,5 @@
 ---
-name: pf-implement
+name: ks-implement
 description: "Use this when the current block is already clear and the job is to complete it. Default route comes from test-first; only controlled low-risk exceptions may enter directly."
 layer: execution
 owner: implement
@@ -110,7 +110,7 @@ Scope creep is the primary failure mode in `implement`. Use this protocol to det
 **Handling rules.** When scope expansion is detected:
 
 1. Stop editing immediately.
-2. Record the discovery in `.primeflow/out-of-scope.md` with this format:
+2. Record the discovery in `.keystone/out-of-scope.md` with this format:
 
    ```markdown
    ## Out-of-Scope Discovery: [short title]
@@ -164,7 +164,7 @@ If any condition fails, do not mark the block complete. Fix the issue or route t
 
 After the block is complete, surface any out-of-scope items that were recorded during Step 3.
 
-1. Review `.primeflow/out-of-scope.md` for entries tagged with the current block.
+1. Review `.keystone/out-of-scope.md` for entries tagged with the current block.
 2. For each entry, suggest a routing:
 
    | Discovery type | Route to |
@@ -186,7 +186,7 @@ After the block is complete, surface any out-of-scope items that were recorded d
 When you realize the current implementation requires work beyond the approved scope:
 
 1. Stop. Do not continue the out-of-scope change.
-2. Record the discovery in `.primeflow/out-of-scope.md` (Step 3 format).
+2. Record the discovery in `.keystone/out-of-scope.md` (Step 3 format).
 3. Check the scope expansion counter. If at 3, trigger the circuit breaker (Step 3).
 4. Decide: can the current block still complete within its approved scope?
    - **Yes**: finish the block, then surface the discovery.
@@ -210,7 +210,7 @@ If running the full test suite reveals that previously passing tests now fail:
 
 1. Identify the failing tests and determine whether they fall inside or outside the current block's scope.
 2. **Inside scope**: the implementation introduced a regression. Fix it as part of the current red-green-refactor loop.
-3. **Outside scope**: the implementation has an unintended side effect. Record it in `.primeflow/out-of-scope.md`. Attempt a minimal fix within the current scope. If the fix would itself expand scope, stop and route to `diagnose`.
+3. **Outside scope**: the implementation has an unintended side effect. Record it in `.keystone/out-of-scope.md`. Attempt a minimal fix within the current scope. If the fix would itself expand scope, stop and route to `diagnose`.
 4. Do not suppress failing tests by marking them `skip`, `xfail`, or commenting them out.
 
 ---
@@ -239,20 +239,20 @@ If the block is skipping `test-first` under an approved low-risk exception:
 
 ```bash
 _CURRENT_BLOCK="${CURRENT_BLOCK:?set CURRENT_BLOCK to current block title}"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-$_PF_CLI state set current_stage "implement" >/dev/null
-$_PF_CLI state set current_block "$_CURRENT_BLOCK" >/dev/null
-$_PF_CLI state set last_decision "implement-complete" >/dev/null
-$_PF_CLI state set exit_code "ok" >/dev/null
-$_PF_CLI state set exit_reason "The implementation loop is complete for the current block" >/dev/null
-$_PF_CLI state set next_skill "verify" >/dev/null
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+$_KS_CLI state set current_stage "implement" >/dev/null
+$_KS_CLI state set current_block "$_CURRENT_BLOCK" >/dev/null
+$_KS_CLI state set last_decision "implement-complete" >/dev/null
+$_KS_CLI state set exit_code "ok" >/dev/null
+$_KS_CLI state set exit_reason "The implementation loop is complete for the current block" >/dev/null
+$_KS_CLI state set next_skill "verify" >/dev/null
 ```
 
 ## Telemetry
 
 ```bash
 _SCOPE_EXPANSIONS="${SCOPE_EXPANSIONS:-0}"
-echo "{\"skill\":\"implement\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"implement-complete\",\"confidence\":0.9,\"block_name\":\"$_CURRENT_BLOCK\",\"scope_expansions\":$_SCOPE_EXPANSIONS}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"implement\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"implement-complete\",\"confidence\":0.9,\"block_name\":\"$_CURRENT_BLOCK\",\"scope_expansions\":$_SCOPE_EXPANSIONS}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ## Quality Checklist

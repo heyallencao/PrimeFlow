@@ -1,8 +1,8 @@
-# PrimeFlow Excellence Plan
+# Keystone Excellence Plan
 
 > From principled protocol to lived product.
 
-This plan addresses the gap between PrimeFlow's current state (a solid workflow contract with clean routing semantics) and the excellence bar set by superpowers and gstack (agent skills that feel like a product, not a spec). It is organized into three waves by impact and dependency order.
+This plan addresses the gap between Keystone's current state (a solid workflow contract with clean routing semantics) and the excellence bar set by superpowers and gstack (agent skills that feel like a product, not a spec). It is organized into three waves by impact and dependency order.
 
 ## Current Diagnosis
 
@@ -43,14 +43,14 @@ These changes transform every SKILL.md from "what this means" into "what to do r
 
 **Effort**: medium (writing the preamble is a design exercise, injection is a reference line)
 
-### 1.2 Rewrite pf-help as First-Run Ritual
+### 1.2 Rewrite ks-help as First-Run Ritual
 
 **What**: Replace the static routing table with a progressive onboarding sequence gated by flag files.
 
 **Flow**:
-1. No `.primeflow/.first-run` → show one-paragraph intro ("Flexible entry, honest exit. Here is how to finish your first real task in 5 minutes."), offer quickstart link, create flag file
-2. No `.primeflow/.telemetry-consent` → ask telemetry preference (community / anonymous / off), write to state, create flag file
-3. No `.primeflow/.proactive-consent` → ask whether agent may proactively suggest skills, create flag file
+1. No `.keystone/.first-run` → show one-paragraph intro ("Flexible entry, honest exit. Here is how to finish your first real task in 5 minutes."), offer quickstart link, create flag file
+2. No `.keystone/.telemetry-consent` → ask telemetry preference (community / anonymous / off), write to state, create flag file
+3. No `.keystone/.proactive-consent` → ask whether agent may proactively suggest skills, create flag file
 4. Subsequent runs → skip all ritual, go straight to routing table (current behavior)
 
 **Rules**:
@@ -59,10 +59,10 @@ These changes transform every SKILL.md from "what this means" into "what to do r
 - if user skips (non-interactive), default to off and create flag silently
 
 **Done when**:
-- [ ] `/pf-help` checks 3 flag files before showing the routing table
+- [ ] `/ks-help` checks 3 flag files before showing the routing table
 - [ ] first-run shows intro + quickstart
 - [ ] telemetry and proactive consent are asked once
-- [ ] flag files are created under `.primeflow/`
+- [ ] flag files are created under `.keystone/`
 - [ ] subsequent runs skip the ritual
 - [ ] 3 new state fields (`first_run_complete`, `telemetry_consent`, `proactive_consent`) are documented in STATE.md
 
@@ -97,24 +97,24 @@ Quality checklist (unchanged)
 ```
 
 **Priority order** (by user impact + dependency chain):
-1. `pf-orchestrate` — the system entry point; if orchestrate is not executable, users never reach downstream skills. Loop detection, handoff recognition, state validation before routing
-2. `pf-help` — already covered in 1.2; first-run ritual + routing table
-3. `pf-review` — specialist prompts, structured output schema, dedup algorithm, confidence boosting (see 1.4 for specialist extraction strategy)
-4. `pf-verify` — evidence priority with exact commands per framework type
-5. `pf-diagnose` — 4-phase method (collect → hypothesize → validate → conclude) with per-phase gates
-6. `pf-implement` — scope discipline with concrete scope-creep detection steps
-7. `pf-qa` — phased pipeline scaled to project size, fix budget, regression test generation
-8. `pf-ship` — CI/CD-aware advisory pipeline (see 2.2 for CLI support needed)
-9. `pf-release` — risk threshold matrix, release statement with executed/skipped split
-10. `pf-roundtable` — per-mode question templates, role activation rules, exit condition decision tree
-11. `pf-writing-plan` — scope test with concrete examples, done-criteria strengthening examples
-12. `pf-test-first` — red-green-refactor with framework-specific command templates
-13. `pf-handoff` — 8-slot validation checklist, compression rules, recovery preview template
-14. `pf-bug-triage` — fast decision tree with symptom examples
-15. `pf-brief` — denoise examples, one-sentence compression test
-16. `pf-pr-prep` — auto-detect diff stats, generated PR description template
-17. `pf-docs-writer` — fact-checking procedure against verify/review artifacts
-18. `pf-knowledge` — retrieval procedure with overlap scoring
+1. `ks-orchestrate` — the system entry point; if orchestrate is not executable, users never reach downstream skills. Loop detection, handoff recognition, state validation before routing
+2. `ks-help` — already covered in 1.2; first-run ritual + routing table
+3. `ks-review` — specialist prompts, structured output schema, dedup algorithm, confidence boosting (see 1.4 for specialist extraction strategy)
+4. `ks-verify` — evidence priority with exact commands per framework type
+5. `ks-diagnose` — 4-phase method (collect → hypothesize → validate → conclude) with per-phase gates
+6. `ks-implement` — scope discipline with concrete scope-creep detection steps
+7. `ks-qa` — phased pipeline scaled to project size, fix budget, regression test generation
+8. `ks-ship` — CI/CD-aware advisory pipeline (see 2.2 for CLI support needed)
+9. `ks-release` — risk threshold matrix, release statement with executed/skipped split
+10. `ks-roundtable` — per-mode question templates, role activation rules, exit condition decision tree
+11. `ks-writing-plan` — scope test with concrete examples, done-criteria strengthening examples
+12. `ks-test-first` — red-green-refactor with framework-specific command templates
+13. `ks-handoff` — 8-slot validation checklist, compression rules, recovery preview template
+14. `ks-bug-triage` — fast decision tree with symptom examples
+15. `ks-brief` — denoise examples, one-sentence compression test
+16. `ks-pr-prep` — auto-detect diff stats, generated PR description template
+17. `ks-docs-writer` — fact-checking procedure against verify/review artifacts
+18. `ks-knowledge` — retrieval procedure with overlap scoring
 
 **Done when**:
 - [ ] every SKILL.md has procedure section as the dominant content
@@ -126,7 +126,7 @@ Quality checklist (unchanged)
 
 ### 1.4 Extract Review Specialists into Separate Files
 
-**What**: Extract reviewer personas from pf-review into standalone prompt files under `decision/review/specialists/`. This eliminates the triple-rewrite problem (inline → extract → subagent) by committing to the file-based structure from the start. The files serve as both inline reference and future subagent prompts.
+**What**: Extract reviewer personas from ks-review into standalone prompt files under `decision/review/specialists/`. This eliminates the triple-rewrite problem (inline → extract → subagent) by committing to the file-based structure from the start. The files serve as both inline reference and future subagent prompts.
 
 **Why now instead of Wave 3**: Writing inline prompts in 1.3 and then extracting them later and then rewriting them as subagent prompts is waste. Files work for all three modes: the SKILL.md references them by path, inline execution reads them sequentially, and subagent dispatch passes them as subagent prompts. No rewrites needed later.
 
@@ -160,7 +160,7 @@ Each specialist file (30-50 lines):
 
 **Done when**:
 - [ ] specialist files exist for all 9 personas
-- [ ] pf-review SKILL.md references them by path (not inline)
+- [ ] ks-review SKILL.md references them by path (not inline)
 - [ ] dedup algorithm is in SKILL.md (fingerprint = file + line_bucket +/-3 + normalized title)
 - [ ] confidence boosting rule is in SKILL.md (2+ independent personas flag same issue → +0.10 up to 1.0)
 - [ ] low-confidence discard rule (< 0.60) is in SKILL.md
@@ -176,7 +176,7 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 
 ### 2.1 QA: From Skeleton to Scaled Pipeline
 
-**What**: Replace the current 3-tag Playwright check with a phased QA pipeline that scales to project size. Not 11 fixed phases — PrimeFlow does not have a persistent Chromium daemon, ref system, or cookie pipeline like gstack. Instead, design a pipeline that uses what PrimeFlow actually has: agent tool access, Playwright (if available), and project-local test commands.
+**What**: Replace the current 3-tag Playwright check with a phased QA pipeline that scales to project size. Not 11 fixed phases — Keystone does not have a persistent Chromium daemon, ref system, or cookie pipeline like gstack. Instead, design a pipeline that uses what Keystone actually has: agent tool access, Playwright (if available), and project-local test commands.
 
 **Scaled phases** (not all phases run for every project):
 
@@ -218,17 +218,17 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 
 ### 2.2 Ship: From Advisory Echo to CI/CD-Aware Pipeline
 
-**What**: Instead of echoing "recommended: git merge X", produce project-specific ship commands. This requires two parts: a SKILL.md procedure for the agent to follow, and a CLI detection command (`primeflow detect-ci`) that does the actual file parsing.
+**What**: Instead of echoing "recommended: git merge X", produce project-specific ship commands. This requires two parts: a SKILL.md procedure for the agent to follow, and a CLI detection command (`keystone detect-ci`) that does the actual file parsing.
 
 **Why CLI support is needed**: SKILL.md is a prompt, not executable code. Parsing `.github/workflows/*.yml` to extract test commands requires real code. The SKILL.md tells the agent what to check and how to interpret results; the CLI command does the actual detection.
 
-**CLI addition**: `primeflow detect-ci`
+**CLI addition**: `keystone detect-ci`
 - scans for `.github/workflows/*.yml`, `Jenkinsfile`, `Makefile`, `package.json` scripts
 - outputs JSON: `{ "type": "github-actions|jenkins|make|node|unknown", "test_cmd": "...", "coverage_cmd": "...", "deploy_cmd": "...", "target_branch": "..." }`
 - this is a read-only detection command, no side effects
 
 **SKILL.md procedure**:
-1. run `primeflow detect-ci` (or `./primeflow detect-ci`)
+1. run `keystone detect-ci` (or `./keystone detect-ci`)
 2. if detection succeeded, use detected commands in the pipeline
 3. if detection returned unknown, fall back to current advisory mode with improved prompts
 4. generate merge/PR/deploy commands using detected or advisory values
@@ -239,7 +239,7 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 - synthesize: overlap = high confidence, unique = blind spot, note as "single-model review" if no secondary available
 
 **Done when**:
-- [ ] `primeflow detect-ci` CLI command exists and returns structured JSON
+- [ ] `keystone detect-ci` CLI command exists and returns structured JSON
 - [ ] ship SKILL.md has CI/CD detection procedure using the CLI command
 - [ ] generated pipeline commands are project-specific when detection succeeds
 - [ ] cross-model review step is in the procedure with graceful degradation
@@ -253,13 +253,13 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 
 | Skill | Circuit breaker | Threshold | Action |
 |---|---|---|---|
-| `pf-implement` | scope expansion counter | 3 expansions | pause, ask user |
-| `pf-verify` | verification failure counter | 2 failures | route to diagnose, do not guess spec again |
-| `pf-qa` | fix budget + WTF-likelihood | 15 fixes initial, 50 hard cap, WTF > 20% | stop and ask |
-| `pf-review` | low-confidence discard | < 0.60 confidence | discard finding, no severity exception |
-| `pf-diagnose` | loop counter (existing) | 3 loops | escalate (already exists, keep) |
-| `pf-roundtable` | low-information answer counter | 2 consecutive | force conclusion with risk disclosure |
-| `pf-writing-plan` | plan revision counter | 3 revisions to same block | escalate to roundtable |
+| `ks-implement` | scope expansion counter | 3 expansions | pause, ask user |
+| `ks-verify` | verification failure counter | 2 failures | route to diagnose, do not guess spec again |
+| `ks-qa` | fix budget + WTF-likelihood | 15 fixes initial, 50 hard cap, WTF > 20% | stop and ask |
+| `ks-review` | low-confidence discard | < 0.60 confidence | discard finding, no severity exception |
+| `ks-diagnose` | loop counter (existing) | 3 loops | escalate (already exists, keep) |
+| `ks-roundtable` | low-information answer counter | 2 consecutive | force conclusion with risk disclosure |
+| `ks-writing-plan` | plan revision counter | 3 revisions to same block | escalate to roundtable |
 
 **Done when**:
 - [ ] each skill has its circuit breaker in the procedure
@@ -270,7 +270,7 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 
 ### 2.4 Developer Profile
 
-**What**: Add `.primeflow/developer-profile.json` that accumulates user preferences across sessions.
+**What**: Add `.keystone/developer-profile.json` that accumulates user preferences across sessions.
 
 **Shape**:
 ```json
@@ -312,7 +312,7 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 
 **Done when**:
 - [ ] `developer-profile.json` schema is defined
-- [ ] `pf-handoff` includes profile summary in recovery preview
+- [ ] `ks-handoff` includes profile summary in recovery preview
 - [ ] at least 3 skills log inference signals to the profile
 - [ ] user-origin gating rule is in the preamble
 
@@ -322,7 +322,7 @@ These changes add new infrastructure that makes the Wave 1 rewrites feel alive r
 
 ## Wave 3: Intelligence Layer (builds on Waves 1+2, makes the system learn)
 
-These changes make PrimeFlow genuinely adaptive rather than just procedurally complete.
+These changes make Keystone genuinely adaptive rather than just procedurally complete.
 
 ### 3.1 Knowledge Retrieval Upgrade
 
@@ -385,7 +385,7 @@ else → sequential inline using specialist files (already works from 1.4)
 - no abstraction layer between host and specialist files
 
 **Done when**:
-- [ ] pf-review SKILL.md has both parallel (Claude Code) and sequential (other hosts) procedures
+- [ ] ks-review SKILL.md has both parallel (Claude Code) and sequential (other hosts) procedures
 - [ ] specialist files are written to work as both inline references and subagent prompts
 - [ ] mode detection logic is in SKILL.md
 - [ ] review report format includes isolation level field
@@ -400,13 +400,13 @@ else → sequential inline using specialist files (already works from 1.4)
 ```
 Wave 1 (executable foundation)
   1.1 Shared Preamble              ████░░░░░░
-  1.2 pf-help First-Run            ██░░░░░░░░
+  1.2 ks-help First-Run            ██░░░░░░░░
   1.3 SKILL.md Rewrites            ██████████  ← longest item, parallelize across skills
   1.4 Specialist Files (review)    ████░░░░░░  ← do with 1.3 item 3, not separately
 
 Wave 2 (product experience)
   2.1 QA Pipeline (scaled)         ████████░░
-  2.2 Ship Pipeline (+ CLI)        ██████░░░░  ← includes primeflow detect-ci
+  2.2 Ship Pipeline (+ CLI)        ██████░░░░  ← includes keystone detect-ci
   2.3 Spiral Prevention            ██░░░░░░░░
   2.4 Developer Profile            ████░░░░░░
 
@@ -417,7 +417,7 @@ Wave 3 (intelligence layer)
 
 Note: Wave 3 originally had "Persona Packs" (3.2) as a separate item. This has been merged into 1.4 — specialist files are created once in Wave 1 and reused in all subsequent waves. No separate extraction step needed. The original 3.3 (Subagent Dispatch) is renumbered to 3.2.
 
-**Suggested execution**: Wave 1 first (it makes all subsequent work land on a surface that can actually show the improvement). Within Wave 1, start with 1.1 (preamble) and 1.2 (first-run) as they are small and self-contained, then begin 1.3 (rewrites) in priority order. When reaching pf-review in 1.3, do 1.4 (specialist files) at the same time since they are the same work unit.
+**Suggested execution**: Wave 1 first (it makes all subsequent work land on a surface that can actually show the improvement). Within Wave 1, start with 1.1 (preamble) and 1.2 (first-run) as they are small and self-contained, then begin 1.3 (rewrites) in priority order. When reaching ks-review in 1.3, do 1.4 (specialist files) at the same time since they are the same work unit.
 
 ## New State Fields
 
@@ -466,7 +466,7 @@ The biggest practical constraint on rewriting SKILL.md files is the agent's cont
 - move voice/preamble to shared file (1.1) — reference, do not inline
 - keep decision contract, state update, telemetry, and quality checklist compact (they are already the right shape)
 
-**When a skill exceeds budget**: split into main SKILL.md + supplementary file. Example: pf-qa.md references `qa/fix-loop-procedure.md` for the fix loop detail. The agent reads the supplement only when it reaches that phase.
+**When a skill exceeds budget**: split into main SKILL.md + supplementary file. Example: ks-qa.md references `qa/fix-loop-procedure.md` for the fix loop detail. The agent reads the supplement only when it reaches that phase.
 
 ## Exception Coverage
 
@@ -476,18 +476,18 @@ The current plan focuses on making normal-flow procedures executable. But excell
 
 | Skill | Key exception paths that need procedure steps |
 |---|---|
-| `pf-orchestrate` | routing loop detected (>5), state file corrupted or missing, handoff request with no handoff packages |
-| `pf-review` | no fresh evidence from verify, conflicting persona findings at same severity, diff is empty, qa_required is null |
-| `pf-verify` | no test framework detected, test contract file missing, all tests pass but done criteria have no coverage |
-| `pf-implement` | scope expansion discovered mid-block, prerequisite skill output missing, existing tests break |
-| `pf-qa` | Playwright installed but no e2e config, staging URL unreachable, fix loop exceeds budget |
-| `pf-ship` | detect-ci returns unknown, branch protection blocks merge, canary fails on first check |
-| `pf-diagnose` | hypothesis disproved 3 times (escalation path), partial root cause (enough to fix or not?), rollback vs fix decision |
-| `pf-release` | P0 discovered during release, ship_result is advisory not done, rollback plan is missing |
-| `pf-roundtable` | user gives 2+ consecutive non-answers, roles disagree on direction, direction converges but scope is unclear |
-| `pf-writing-plan` | done criteria are untestable, risk level disagreement with orchestrate, plan type unclear |
-| `pf-handoff` | snapshot.json is damaged, handoff target not found, 8-slot validation finds empty slots |
-| `pf-test-first` | no test framework in project, test contract exceeds reasonable scope, red phase never fails |
+| `ks-orchestrate` | routing loop detected (>5), state file corrupted or missing, handoff request with no handoff packages |
+| `ks-review` | no fresh evidence from verify, conflicting persona findings at same severity, diff is empty, qa_required is null |
+| `ks-verify` | no test framework detected, test contract file missing, all tests pass but done criteria have no coverage |
+| `ks-implement` | scope expansion discovered mid-block, prerequisite skill output missing, existing tests break |
+| `ks-qa` | Playwright installed but no e2e config, staging URL unreachable, fix loop exceeds budget |
+| `ks-ship` | detect-ci returns unknown, branch protection blocks merge, canary fails on first check |
+| `ks-diagnose` | hypothesis disproved 3 times (escalation path), partial root cause (enough to fix or not?), rollback vs fix decision |
+| `ks-release` | P0 discovered during release, ship_result is advisory not done, rollback plan is missing |
+| `ks-roundtable` | user gives 2+ consecutive non-answers, roles disagree on direction, direction converges but scope is unclear |
+| `ks-writing-plan` | done criteria are untestable, risk level disagreement with orchestrate, plan type unclear |
+| `ks-handoff` | snapshot.json is damaged, handoff target not found, 8-slot validation finds empty slots |
+| `ks-test-first` | no test framework in project, test contract exceeds reasonable scope, red phase never fails |
 
 **Format for each exception path**:
 ```
@@ -508,7 +508,7 @@ The plan does not yet address how to verify that different agents (Claude, Codex
 - presentation differences (tone, formatting, verbosity) are acceptable
 - behavioral differences (routing to wrong skill, skipping steps, wrong decision label) are not
 
-**Verification method**: for each rewritten skill, create a test scenario in `docs/primeflow/test-contracts/` that specifies:
+**Verification method**: for each rewritten skill, create a test scenario in `docs/keystone/test-contracts/` that specifies:
 1. input state
 2. expected decision contract fields
 3. expected next_skill
@@ -517,7 +517,7 @@ The plan does not yet address how to verify that different agents (Claude, Codex
 This does not require automated testing — it requires a human-readable contract that can be manually verified across agents. Add this as a quality gate in the rewrite done-criteria.
 
 **Done when**:
-- [ ] each rewritten skill has a test scenario in `docs/primeflow/test-contracts/`
+- [ ] each rewritten skill has a test scenario in `docs/keystone/test-contracts/`
 - [ ] test scenario covers at least: normal flow, one exception path, expected state mutations
 - [ ] at least 3 core skills have been verified across Claude + one other agent
 
@@ -525,6 +525,6 @@ This does not require automated testing — it requires a human-readable contrac
 
 - **Do not make SKILL.md files longer by adding prose.** Make them longer by adding procedure steps. Prose should shrink.
 - **Do not add new skills.** The 18-skill set is correct. Make each one better.
-- **Do not build infrastructure that requires a running server.** PrimeFlow's strength is that it runs as agent-native skills, not as a separate service.
+- **Do not build infrastructure that requires a running server.** Keystone's strength is that it runs as agent-native skills, not as a separate service.
 - **Do not break the decision contract.** It is the stable API between skills. Procedure changes are internal.
-- **Do not optimize for the repo-local CLI at the expense of agent-native invocation.** Most users will invoke skills through their agent, not through `./primeflow`.
+- **Do not optimize for the repo-local CLI at the expense of agent-native invocation.** Most users will invoke skills through their agent, not through `./keystone`.

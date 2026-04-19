@@ -1,4 +1,4 @@
-# PrimeFlow Shared Preamble
+# Keystone Shared Preamble
 
 > Reference this file from every SKILL.md. Do not inline it.
 
@@ -65,8 +65,8 @@ On first use per skill invocation, gloss these terms in parentheses if the conte
 | ship | delivery closeout between review and release |
 | release | honest closeout statement with executed/skipped validation split |
 | handoff | freeze and restore context across sessions |
-| telemetry | structured event log in .primeflow/telemetry/events/ |
-| state.json | workflow state file in .primeflow/state.json |
+| telemetry | structured event log in .keystone/telemetry/events/ |
+| state.json | workflow state file in .keystone/state.json |
 | confidence | self-assessed 0.0-1.0 score on how reliable the decision is |
 | risk level | low / medium / high — assigned by orchestrate, adjustable by later skills |
 | escalate | route to human judgment instead of continuing automatically |
@@ -75,7 +75,7 @@ On first use per skill invocation, gloss these terms in parentheses if the conte
 | dedup | merge duplicate findings across specialists using fingerprint matching |
 | confidence boosting | when 2+ independent specialists flag the same issue, raise confidence by 0.10 up to 1.0 |
 | WTF-likelihood | self-regulation score: reverts +15%, multi-file fixes +5%, hard cap 50, stop at 20% |
-| developer profile | .primeflow/developer-profile.json — accumulated user preferences across sessions |
+| developer profile | .keystone/developer-profile.json — accumulated user preferences across sessions |
 | preamble | this file — shared voice, AskUser format, jargon list |
 
 ---

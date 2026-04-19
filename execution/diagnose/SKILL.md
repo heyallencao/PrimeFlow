@@ -1,5 +1,5 @@
 ---
-name: pf-diagnose
+name: ks-diagnose
 description: "Use this when the system is broken, tests are failing, or behavior is abnormal and the root cause is still unknown. No investigation, no fix."
 layer: execution
 owner: diagnose
@@ -49,13 +49,13 @@ The workflow gets at most 3 loops of hypothesis and validation. If the root caus
 
 ```bash
 # Run the failing test suite and capture output
-[PROJECT_FAILING_TEST_CMD] 2>&1 | tee /tmp/pf-diagnose-test-error.log
+[PROJECT_FAILING_TEST_CMD] 2>&1 | tee /tmp/ks-diagnose-test-error.log
 
 # Example framework commands — see templates/test-commands.md for full reference
-# Python:  pytest -k "scenario_name" -v 2>&1 | tee /tmp/pf-diagnose-test-error.log
-# Node:    npx jest --testNamePattern="scenario" 2>&1 | tee /tmp/pf-diagnose-test-error.log
-# Go:      go test -v -run TestName ./... 2>&1 | tee /tmp/pf-diagnose-test-error.log
-# Shell:   bats tests/case.bats 2>&1 | tee /tmp/pf-diagnose-test-error.log
+# Python:  pytest -k "scenario_name" -v 2>&1 | tee /tmp/ks-diagnose-test-error.log
+# Node:    npx jest --testNamePattern="scenario" 2>&1 | tee /tmp/ks-diagnose-test-error.log
+# Go:      go test -v -run TestName ./... 2>&1 | tee /tmp/ks-diagnose-test-error.log
+# Shell:   bats tests/case.bats 2>&1 | tee /tmp/ks-diagnose-test-error.log
 ```
 
 2. Check recent changes to the affected area.
@@ -79,7 +79,7 @@ git diff --stat --cached
 tail -100 [PROJECT_LOG_PATH]
 
 # Stack traces or error dumps
-ls -lt /tmp/pf-diagnose-*.log 2>/dev/null
+ls -lt /tmp/ks-diagnose-*.log 2>/dev/null
 ```
 
 4. Identify the minimal reproducer. Strip away unrelated factors until the failure reproduces with the smallest possible input or condition set.
@@ -173,13 +173,13 @@ Record the hypothesis before moving to validation:
 
 ```bash
 # Create a focused reproduction script
-cat > /tmp/pf-diagnose-repro.sh << 'EOF'
+cat > /tmp/ks-diagnose-repro.sh << 'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 # [minimal steps to reproduce the specific failure condition]
 EOF
-chmod +x /tmp/pf-diagnose-repro.sh
-/tmp/pf-diagnose-repro.sh
+chmod +x /tmp/ks-diagnose-repro.sh
+/tmp/ks-diagnose-repro.sh
 ```
 
 3. Run the check and record the result.
@@ -242,13 +242,13 @@ When the evidence shows that a specific recent change is the cause and reverting
 ## Loop Counter
 
 ```bash
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-_LOOPS=$($_PF_CLI state get diagnose_loops 2>/dev/null | tr -d '"')
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+_LOOPS=$($_KS_CLI state get diagnose_loops 2>/dev/null | tr -d '"')
 if [ "$_LOOPS" = "null" ] || [ -z "$_LOOPS" ]; then
   _LOOPS=0
 fi
 _NEW_LOOPS=$((_LOOPS + 1))
-$_PF_CLI state set diagnose_loops "$_NEW_LOOPS" >/dev/null
+$_KS_CLI state set diagnose_loops "$_NEW_LOOPS" >/dev/null
 echo "Diagnose loop: $_LOOPS -> $_NEW_LOOPS/3"
 ```
 
@@ -378,14 +378,14 @@ When the failure matches a pattern seen before:
 _DIAGNOSE_RESULT="${DIAGNOSE_RESULT:?set DIAGNOSE_RESULT to found|rollback|unknown}"
 _DIAGNOSE_DECISION="${DIAGNOSE_DECISION:?set DIAGNOSE_DECISION to root-cause-found|rollback-required|diagnose-unknown}"
 _ROOT_CAUSE="${ROOT_CAUSE:-unknown}"
-_PF_CLI="${PRIMEFLOW_CLI:-./primeflow}"
-_LOOPS=$($_PF_CLI state get diagnose_loops 2>/dev/null | tr -d '"')
+_KS_CLI="${KEYSTONE_CLI:-./keystone}"
+_LOOPS=$($_KS_CLI state get diagnose_loops 2>/dev/null | tr -d '"')
 if [ "$_LOOPS" = "null" ] || [ -z "$_LOOPS" ]; then _LOOPS=0; fi
 _NEW_LOOPS=$((_LOOPS + 1))
 
-$_PF_CLI state set current_stage "diagnose" >/dev/null
-$_PF_CLI state set diagnose_result "$_DIAGNOSE_RESULT" >/dev/null
-$_PF_CLI state set last_decision "$_DIAGNOSE_DECISION" >/dev/null
+$_KS_CLI state set current_stage "diagnose" >/dev/null
+$_KS_CLI state set diagnose_result "$_DIAGNOSE_RESULT" >/dev/null
+$_KS_CLI state set last_decision "$_DIAGNOSE_DECISION" >/dev/null
 
 case "$_DIAGNOSE_RESULT" in
   found)
@@ -410,9 +410,9 @@ case "$_DIAGNOSE_RESULT" in
     fi
     ;;
 esac
-$_PF_CLI state set exit_code "$_EXIT_CODE" >/dev/null
-$_PF_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
-$_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
+$_KS_CLI state set exit_code "$_EXIT_CODE" >/dev/null
+$_KS_CLI state set exit_reason "$_EXIT_REASON" >/dev/null
+$_KS_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ```
 
 ---
@@ -420,7 +420,7 @@ $_PF_CLI state set next_skill "$_EXIT_NEXT" >/dev/null
 ## Telemetry
 
 ```bash
-echo "{\"skill\":\"diagnose\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_DIAGNOSE_DECISION\",\"confidence\":0.9,\"diagnose_loops\":$_NEW_LOOPS,\"root_cause\":\"$_ROOT_CAUSE\",\"diagnose_result\":\"$_DIAGNOSE_RESULT\"}" >> .primeflow/telemetry/events/$(date +%Y-%m).jsonl
+echo "{\"skill\":\"diagnose\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"decision\":\"$_DIAGNOSE_DECISION\",\"confidence\":0.9,\"diagnose_loops\":$_NEW_LOOPS,\"root_cause\":\"$_ROOT_CAUSE\",\"diagnose_result\":\"$_DIAGNOSE_RESULT\"}" >> .keystone/telemetry/events/$(date +%Y-%m).jsonl
 ```
 
 ---

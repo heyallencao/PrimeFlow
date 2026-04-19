@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-HANDOFF_ROOT="${HANDOFF_ROOT:-.primeflow/handoff}"
+HANDOFF_ROOT="${HANDOFF_ROOT:-.keystone/handoff}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGE_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
-PF_CLI=(node "$PACKAGE_ROOT/bin/primeflow.mjs")
+KS_CLI=(node "$PACKAGE_ROOT/bin/keystone.mjs")
 
 usage() {
   cat <<'USAGE'
@@ -39,12 +39,12 @@ json_read() {
   local normalized
   local value
 
-  if [ ! -f ".primeflow/state.json" ]; then
+  if [ ! -f ".keystone/state.json" ]; then
     return 0
   fi
 
   normalized="$(normalize_query "$query")"
-  value="$("${PF_CLI[@]}" state get "$normalized" 2>/dev/null | tr -d '"')" || true
+  value="$("${KS_CLI[@]}" state get "$normalized" 2>/dev/null | tr -d '"')" || true
   if [ "$value" = "null" ]; then
     printf '%s\n' ""
     return 0
