@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/heyallencao/Keystone/actions/workflows/ci.yml/badge.svg)](https://github.com/heyallencao/Keystone/actions/workflows/ci.yml)
 
-**[keystone.pages.dev](https://keystone.pages.dev)** - docs and demos
 
 > AI agents that know when to stop, verify, and say no instead of only pushing forward.
 
